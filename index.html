@@ -572,10 +572,108 @@ input,textarea,select{font-family:inherit;}
 .category-legend .chip{padding:6px 11px;font-size:12px;}
 
 @media(min-width:640px){
-  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
-  .drawer{max-width:420px;left:auto;right:0;border-radius:20px 0 0 0;max-height:100vh;top:0;}
+  .topbar{padding:22px 28px 14px;}
+  .shop-title .name{font-size:32px;}
+  .shop-title .sub{font-size:15px;}
+  .sub .dot{width:8px;height:8px;margin-right:7px;}
+  .cart-fab{gap:11px;padding:15px 22px 15px 18px;font-size:19px;min-height:58px;}
+  .cart-fab .badge{min-width:28px;height:28px;font-size:15px;padding:0 7px;}
+  .cart-fab .amt{font-size:18px;}
+  .chip-row{gap:12px;padding:8px 28px 16px;}
+  .chip{padding:12px 18px;font-size:16px;}
+  .grid-scroll{padding:8px 24px 120px;}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;}
+  .item-card{border-radius:18px;}
+  .item-photo{font-size:48px;}
+  .stock-flag{top:10px;left:10px;font-size:12px;padding:4px 8px;border-radius:7px;}
+  .item-body{padding:14px 15px 16px;gap:12px;}
+  .item-name{font-size:18px;line-height:1.28;min-height:2.56em;}
+  .price-tag{font-size:18px;padding:6px 12px 6px 18px;border-radius:7px;}
+  .price-tag::before{left:6px;width:5px;height:5px;}
+  .add-btn{width:48px;height:42px;border-radius:10px;font-size:24px;}
+  .stepper{border-radius:10px;}
+  .stepper button{width:38px;height:42px;font-size:21px;}
+  .stepper .qty{min-width:28px;font-size:16px;}
+  .empty-state{padding:90px 40px;}
+  .empty-state .big{font-size:52px;}
+  .empty-state .t{font-size:21px;}
+  .empty-state .s{font-size:16px;max-width:360px;}
+  .gear-btn{left:20px;bottom:20px;width:44px;height:44px;font-size:20px;}
+  .drawer{max-width:560px;left:auto;right:0;border-radius:24px 0 0 24px;max-height:100vh;top:0;}
+  .drawer-handle{width:48px;height:5px;margin:14px auto 6px;}
+  .drawer-head{padding:10px 26px 16px;}
+  .drawer-head h3{font-size:24px;}
+  .drawer-head .close{font-size:26px;padding:6px 10px;}
+  .quick-row{padding:18px 26px 8px;}
+  .quick-row .lbl{font-size:13px;margin-bottom:10px;}
+  .quick-chips{gap:10px;}
+  .quick-chip{padding:8px 12px 8px 8px;border-radius:14px;}
+  .quick-chip img,.quick-chip .ph{width:44px;height:44px;border-radius:9px;font-size:20px;}
+  .quick-chip .qn{font-size:14px;max-width:130px;}
+  .quick-chip .qp{font-size:12px;}
+  .quick-chip .plus{width:28px;height:28px;font-size:17px;}
+  .cart-list{padding:8px 26px;}
+  .cart-row{gap:14px;padding:16px 0;}
+  .cart-row .ph{width:64px;height:64px;border-radius:12px;font-size:28px;}
+  .cart-row .nm{font-size:17px;}
+  .cart-row .pp{font-size:14px;}
+  .cart-row .line-total{font-size:17px;min-width:70px;}
+  .drawer-foot{padding:20px 26px 26px;}
+  .total-row{margin-bottom:16px;}
+  .total-row .lbl{font-size:16px;}
+  .total-row .val{font-size:32px;}
+  .checkout-btn{padding:19px;font-size:18px;border-radius:14px;}
+
+  /* Seller dashboard gets the same tablet-first touch sizing. */
+  .seller-top{padding:20px 28px 12px;}
+  .back-btn{width:46px;height:46px;font-size:30px;}
+  .seller-top h2{font-size:27px;}
+  .seller-tabs{gap:10px;padding:8px 28px 16px;}
+  .stab{padding:12px 18px;border-radius:12px;font-size:16px;}
+  .seller-body{padding:6px 28px 56px;}
+  .form-card{border-radius:18px;padding:22px;margin-bottom:20px;}
+  .form-card h4{font-size:16px;margin-bottom:16px;}
+  .field label{font-size:14px;margin-bottom:7px;}
+  .field input,.field select{padding:14px 15px;border-radius:11px;font-size:16px;min-height:50px;}
+  .photo-preview{width:84px;height:84px;border-radius:14px;font-size:32px;}
+  .photo-btn{padding:13px 17px;border-radius:11px;font-size:15px;}
+  .primary-btn{padding:17px;border-radius:13px;font-size:17px;}
+  .ghost-btn{padding:15px;border-radius:13px;font-size:16px;}
+  .stock-item{gap:16px;padding:14px;margin-bottom:14px;border-radius:16px;}
+  .stock-item .ph{width:68px;height:68px;border-radius:12px;font-size:30px;}
+  .stock-item .nm{font-size:17px;}
+  .stock-item .meta{font-size:13px;}
+  .stock-item .qty-ctrl{gap:10px;padding:3px;border-radius:11px;}
+  .stock-item .qty-ctrl button{width:38px;height:38px;border-radius:9px;font-size:21px;}
+  .stock-item .qty-ctrl .n{min-width:28px;font-size:16px;}
+  .stock-item .del{width:38px;height:38px;font-size:20px;}
+  .section-lbl{font-size:14px;margin:22px 0 12px;}
+  .qp-item{gap:16px;padding:14px;margin-bottom:14px;border-radius:16px;}
+  .qp-item .ph{width:60px;height:60px;border-radius:11px;font-size:28px;}
+  .qp-item .nm{font-size:17px;}
+  .qp-item .check{width:28px;height:28px;font-size:15px;}
+  .qp-note{font-size:14px;}
 }
 
+@media(min-width:1000px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));}
+  .seller-body{max-width:1100px;width:100%;margin:0 auto;}
+}
+
+
+/* ================= MARKETING POSTER ================= */
+.marketing-actions{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0 18px;}
+.marketing-actions .primary-btn,.marketing-actions .ghost-btn{margin:0;}
+.marketing-note{font-size:12px;color:var(--muted);line-height:1.5;margin:-6px 0 14px;}
+.poster-preview{display:none;}
+@media(min-width:640px){
+  .marketing-actions{grid-template-columns:1fr 1fr;gap:12px;}
+  .marketing-note{font-size:14px;}
+}
+@media print{
+  body>*:not(#printPosterRoot){display:none!important;}
+  #printPosterRoot{display:block!important;}
+}
 </style>
 </head>
 <body>
@@ -675,6 +773,16 @@ input,textarea,select{font-family:inherit;}
         <div class="section-lbl">In stock</div>
         <div id="stockList"></div>
 
+        <div class="form-card marketing-card">
+          <h4>Marketing poster</h4>
+          <p class="marketing-note">Build a fresh catalog from every item that is currently in stock, using the live selling price and the photos already saved in the store.</p>
+          <div class="marketing-actions">
+            <button type="button" class="primary-btn" id="generatePngBtn">Download PNG</button>
+            <button type="button" class="ghost-btn" id="sharePngBtn">Share PNG</button>
+          </div>
+          <button type="button" class="ghost-btn" id="printPosterBtn">Print / Save as PDF</button>
+        </div>
+
         <div class="form-card">
           <h4>Add a new item</h4>
           <form id="addItemForm">
@@ -738,6 +846,15 @@ input,textarea,select{font-family:inherit;}
           </div>
 
           <div class="form-card">
+            <h4>Marketing footer</h4>
+            <p class="qp-note">Optional text shown at the bottom of the PNG poster. For example: your room number, contact instruction, or pickup note.</p>
+            <div class="field">
+              <label>Footer / order text</label>
+              <input type="text" id="setMarketingFooter" placeholder="Room 214 · DM to order">
+            </div>
+          </div>
+
+          <div class="form-card">
             <h4>Standard pricing</h4>
             <p class="qp-note">Prices shown to customers = item base (cost) price × the multiplier for the current time. This multiplier applies whenever none of the tiers below are active.</p>
             <div class="field-row">
@@ -787,6 +904,7 @@ input,textarea,select{font-family:inherit;}
   </div>
 
   <div class="toast" id="toast"></div>
+  <div id="printPosterRoot" style="display:none;"></div>
 
 </div>
 
@@ -3130,6 +3248,7 @@ const DEFAULT_SETTINGS = {
   normalMultiplier:1.25,
   rounding:1,
   pin:"1234",
+  marketingFooter:"Room 214 · DM to order",
   // Ordered list of extra pricing tiers on top of the standard multiplier.
   // Each tier has a name, a time window (24h "HH:MM", wraps past midnight if end < start),
   // and a multiplier. If more than one tier's window is active at once, the LAST
@@ -3668,6 +3787,7 @@ function fillSettingsForm(){
   document.getElementById('setNormalMult').value = settings.normalMultiplier;
   document.getElementById('setRounding').value = settings.rounding;
   document.getElementById('setPin').value = settings.pin;
+  document.getElementById('setMarketingFooter').value = settings.marketingFooter || "";
   draftTiers = (settings.pricingTiers||[]).map(t=>({...t}));
   renderTiersList();
 }
@@ -3721,11 +3841,271 @@ async function handleSaveSettings(e){
   await saveSetting('payeeName', document.getElementById('setPayee').value.trim());
   await saveSetting('normalMultiplier', parseFloat(document.getElementById('setNormalMult').value)||1);
   await saveSetting('rounding', parseFloat(document.getElementById('setRounding').value));
+  await saveSetting('marketingFooter', document.getElementById('setMarketingFooter').value.trim());
   await saveSetting('pricingTiers', draftTiers.filter(t=>t.start && t.end));
   const newPin = document.getElementById('setPin').value.trim();
   if (/^\d{4}$/.test(newPin)) await saveSetting('pin', newPin);
   toast("Settings saved");
   updatePriceWindowLabel();
+}
+
+
+/* ================= MARKETING POSTER ================= */
+function formatPosterTime(hhmm){
+  if (!hhmm) return "";
+  const [h,m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h||0,m||0,0,0);
+  return d.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'});
+}
+
+function getMarketingTierCopy(){
+  const tiers = (settings.pricingTiers||[]).filter(t=>t && t.start && t.multiplier);
+  if (!tiers.length) return "";
+  const parts = tiers.map(t=>`×${t.multiplier} at ${formatPosterTime(t.start)}`);
+  if (parts.length===1) return `Prices rise to ${parts[0]}`;
+  return `Prices rise: ${parts.join(" · ")}`;
+}
+
+function getMarketingItems(){
+  return CATEGORIES.map(category=>({
+    category,
+    items: items
+      .filter(it => it.category===category && (it.qty||0)>0)
+      .sort((a,b)=>(a.name||"").localeCompare(b.name||""))
+  })).filter(group=>group.items.length);
+}
+
+function escapeCanvasText(ctx, text, maxWidth, font){
+  ctx.font = font;
+  const words = String(text||"").split(/\s+/);
+  const lines = [];
+  let line = "";
+  for (const word of words){
+    const test = line ? line+" "+word : word;
+    if (ctx.measureText(test).width <= maxWidth || !line) line = test;
+    else { lines.push(line); line = word; }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function loadPosterImage(src){
+  return new Promise(resolve=>{
+    if (!src) return resolve(null);
+    const img = new Image();
+    img.onload = ()=>resolve(img);
+    img.onerror = ()=>resolve(null);
+    img.src = src;
+  });
+}
+
+async function buildMarketingPoster(){
+  const groups = getMarketingItems();
+  if (!groups.length){
+    toast("No items are currently in stock");
+    return null;
+  }
+
+  const W = 1080;
+  const M = 64;
+  const COL_GAP = 28;
+  const COL_W = (W - M*2 - COL_GAP) / 2;
+  const ITEM_H = 158;
+  const CAT_HEAD_H = 66;
+  const HEADER_H = 180;
+  const FOOTER_H = 190;
+
+  let contentH = 0;
+  for (const group of groups){
+    contentH += CAT_HEAD_H + Math.ceil(group.items.length/2) * ITEM_H + 20;
+  }
+  const H = HEADER_H + contentH + FOOTER_H;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#FFFBF2';
+  ctx.fillRect(0,0,W,H);
+
+  // Header
+  ctx.fillStyle = '#16191C';
+  ctx.fillRect(0,0,W,HEADER_H);
+  ctx.fillStyle = '#FFC93C';
+  ctx.font = '800 54px Arial, sans-serif';
+  ctx.fillText(settings.shopName || 'Hostel Store', M, 74);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '600 26px Arial, sans-serif';
+  ctx.fillText('IN STOCK NOW', M, 120);
+  ctx.fillStyle = '#B9B3A4';
+  ctx.font = '500 22px Arial, sans-serif';
+  ctx.fillText(`Updated ${new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}`, M, 153);
+
+  let y = HEADER_H + 18;
+
+  for (const group of groups){
+    // Category heading
+    ctx.fillStyle = '#2A2E33';
+    ctx.font = '800 28px Arial, sans-serif';
+    ctx.fillText(`${CAT_ICON[group.category]||''} ${group.category.toUpperCase()}`, M, y+34);
+    ctx.strokeStyle = '#E7DFC9';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(M, y+50);
+    ctx.lineTo(W-M, y+50);
+    ctx.stroke();
+    y += CAT_HEAD_H;
+
+    const imgs = await Promise.all(group.items.map(it=>loadPosterImage(it.photo)));
+    for (let i=0;i<group.items.length;i+=2){
+      for (let col=0; col<2; col++){
+        const it = group.items[i+col];
+        if (!it) continue;
+        const x = M + col*(COL_W+COL_GAP);
+        const rowY = y + Math.floor(i/2)*ITEM_H;
+        const imgSize = 118;
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#E7DFC9';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x,rowY,COL_W,ITEM_H-12,18);
+        ctx.fill();
+        ctx.stroke();
+
+        const img = imgs[i+col];
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(x+16,rowY+16,imgSize,imgSize,14);
+        ctx.clip();
+        ctx.fillStyle = '#FBF3DE';
+        ctx.fillRect(x+16,rowY+16,imgSize,imgSize);
+        if (img){
+          const scale = Math.max(imgSize/img.width,imgSize/img.height);
+          const dw = img.width*scale, dh = img.height*scale;
+          ctx.drawImage(img,x+16+(imgSize-dw)/2,rowY+16+(imgSize-dh)/2,dw,dh);
+        } else {
+          ctx.font = '44px Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#8A8370';
+          ctx.fillText(CAT_ICON[it.category]||'🍬',x+16+imgSize/2,rowY+16+imgSize/2);
+          ctx.textAlign = 'start';
+          ctx.textBaseline = 'alphabetic';
+        }
+        ctx.restore();
+
+        const tx = x+150;
+        const maxTextW = COL_W-170;
+        const nameLines = escapeCanvasText(ctx,it.name,maxTextW,'700 25px Arial, sans-serif').slice(0,2);
+        ctx.fillStyle = '#16191C';
+        ctx.font = '700 25px Arial, sans-serif';
+        nameLines.forEach((line,n)=>ctx.fillText(line,tx,rowY+46+n*31));
+
+        ctx.fillStyle = '#E8491D';
+        ctx.font = '800 29px Arial, sans-serif';
+        ctx.fillText(money(livePrice(it.price)),tx,rowY+116);
+      }
+    }
+    y += Math.ceil(group.items.length/2) * ITEM_H + 20;
+  }
+
+  // Footer
+  ctx.fillStyle = '#16191C';
+  ctx.fillRect(0,y,W,FOOTER_H);
+  let fy = y + 48;
+  const tierCopy = getMarketingTierCopy();
+  if (tierCopy){
+    ctx.fillStyle = '#FFC93C';
+    ctx.font = '800 28px Arial, sans-serif';
+    const tierLines = escapeCanvasText(ctx,tierCopy,W-M*2,'800 28px Arial, sans-serif');
+    tierLines.slice(0,2).forEach((line,n)=>ctx.fillText(line,M,fy+n*36));
+    fy += Math.min(2,tierLines.length)*36 + 12;
+  }
+
+  const footer = (settings.marketingFooter||"").trim();
+  if (footer){
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '700 28px Arial, sans-serif';
+    const footerLines = escapeCanvasText(ctx,footer,W-M*2,'700 28px Arial, sans-serif');
+    footerLines.slice(0,2).forEach((line,n)=>ctx.fillText(line,M,fy+n*36));
+  } else if (!tierCopy){
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '700 28px Arial, sans-serif';
+    ctx.fillText('DM to order',M,fy);
+  }
+
+  return canvas;
+}
+
+async function generateMarketingPNG(){
+  const canvas = await buildMarketingPoster();
+  if (!canvas) return null;
+  const blob = await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if (!blob) { toast("Could not create PNG"); return null; }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(settings.shopName||'hostel-store').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase()}-poster.png`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Marketing PNG ready ✓");
+  return {blob, canvas};
+}
+
+async function shareMarketingPNG(){
+  const canvas = await buildMarketingPoster();
+  if (!canvas) return;
+  const blob = await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if (!blob) return;
+  const file = new File([blob],`${(settings.shopName||'hostel-store').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-poster.png`,{type:'image/png'});
+  if (navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+    try{
+      await navigator.share({title:settings.shopName||'Hostel Store',text:'Today’s hostel store items',files:[file]});
+      toast("Share sheet opened");
+      return;
+    }catch(e){
+      if (e && e.name==='AbortError') return;
+    }
+  }
+  // Fallback: download the PNG so it can be attached to WhatsApp manually.
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("PNG downloaded — attach it to WhatsApp");
+}
+
+function buildPosterPrintHTML(canvas){
+  const dataUrl = canvas.toDataURL('image/png');
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(settings.shopName||'Hostel Store')} Poster</title>
+  <style>
+    html,body{margin:0;padding:0;background:#fff;}
+    body{display:flex;justify-content:center;}
+    img{width:100%;max-width:1080px;height:auto;display:block;}
+    @page{size:auto;margin:0;}
+  </style></head><body><img src="${dataUrl}" onload="setTimeout(()=>window.print(),150)"></body></html>`;
+}
+
+async function printMarketingPoster(){
+  const canvas = await buildMarketingPoster();
+  if (!canvas) return;
+  const w = window.open('','_blank');
+  if (!w){
+    toast("Allow pop-ups to print the poster");
+    return;
+  }
+  w.document.open();
+  w.document.write(buildPosterPrintHTML(canvas));
+  w.document.close();
 }
 
 /* ================= EVENT BINDING ================= */
@@ -3804,6 +4184,10 @@ function bindEvents(){
   });
 
   document.getElementById('settingsForm').addEventListener('submit', handleSaveSettings);
+
+  document.getElementById('generatePngBtn').addEventListener('click', generateMarketingPNG);
+  document.getElementById('sharePngBtn').addEventListener('click', shareMarketingPNG);
+  document.getElementById('printPosterBtn').addEventListener('click', printMarketingPoster);
 
   document.getElementById('addTierBtn').addEventListener('click', ()=>{
     syncDraftTiersFromDOM();
