@@ -383,7 +383,7 @@ input,textarea,select{font-family:inherit;}
   display:flex;align-items:center;justify-content:center;
   margin-bottom:16px;border:1px solid var(--line);
 }
-.qr-box svg{width:100%;height:auto;max-width:220px;}
+.qr-box svg{width:100%;height:auto;max-width:300px;}
 .qr-hint{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
 .paid-btn{
   width:100%;background:var(--ink);color:#fff;border:none;
@@ -599,7 +599,14 @@ input,textarea,select{font-family:inherit;}
   .empty-state .t{font-size:21px;}
   .empty-state .s{font-size:16px;max-width:360px;}
   .gear-btn{left:20px;bottom:20px;width:44px;height:44px;font-size:20px;}
-  .drawer{max-width:560px;left:auto;right:0;border-radius:24px 0 0 24px;max-height:100vh;top:0;}
+  .drawer{
+    width:min(68vw,760px);
+    min-width:520px;
+    max-width:none;
+    left:auto;right:0;top:0;
+    border-radius:24px 0 0 24px;
+    max-height:100vh;
+  }
   .drawer-handle{width:48px;height:5px;margin:14px auto 6px;}
   .drawer-head{padding:10px 26px 16px;}
   .drawer-head h3{font-size:24px;}
@@ -619,6 +626,12 @@ input,textarea,select{font-family:inherit;}
   .cart-row .pp{font-size:14px;}
   .cart-row .line-total{font-size:17px;min-width:70px;}
   .drawer-foot{padding:20px 26px 26px;}
+  .qr-card{max-width:520px;padding:32px 34px 28px;}
+  .qr-box{padding:20px;margin-bottom:20px;}
+  .qr-box svg{max-width:360px;}
+  .qr-card .amount{font-size:44px;}
+  .qr-card .to{font-size:15px;}
+  .qr-hint{font-size:14px;}
   .total-row{margin-bottom:16px;}
   .total-row .lbl{font-size:16px;}
   .total-row .val{font-size:32px;}
@@ -3590,7 +3603,7 @@ function openCheckout(){
   const qr = qrcode(0, 'M');
   qr.addData(uri);
   qr.make();
-  document.getElementById('qrBox').innerHTML = qr.createSvgTag({cellSize:5, margin:2});
+  document.getElementById('qrBox').innerHTML = qr.createSvgTag({cellSize:8, margin:2});
   document.getElementById('checkoutModal').classList.add('show');
 }
 
@@ -4007,6 +4020,17 @@ async function buildMarketingPoster(){
         ctx.fillStyle = '#E8491D';
         ctx.font = '800 29px Arial, sans-serif';
         ctx.fillText(money(livePrice(it.price)),tx,rowY+116);
+
+        // Small live stock indicator for the marketing poster.
+        const stockText = it.qty === 1 ? '1 left' : `${it.qty} left`;
+        ctx.font = '700 17px Arial, sans-serif';
+        const stockW = ctx.measureText(stockText).width + 18;
+        ctx.fillStyle = it.qty <= 3 ? '#FFF0E8' : '#EEF7F0';
+        ctx.beginPath();
+        ctx.roundRect(tx,rowY+122,stockW,20,7);
+        ctx.fill();
+        ctx.fillStyle = it.qty <= 3 ? '#C13A15' : '#25803F';
+        ctx.fillText(stockText,tx+9,rowY+137);
       }
     }
     y += Math.ceil(group.items.length/2) * ITEM_H + 20;
