@@ -663,6 +663,22 @@ input,textarea,select{font-family:inherit;}
 .stat-box .v{font-family:var(--font-mono);font-size:20px;font-weight:800;}
 .stat-box .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
 
+.profit-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;}
+.profit-toggle{display:flex;gap:6px;background:var(--paper-dim);padding:4px;border-radius:12px;}
+.profit-toggle button{border:none;background:transparent;border-radius:9px;padding:8px 13px;font-size:12px;font-weight:800;color:var(--muted);cursor:pointer;}
+.profit-toggle button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.profit-period{font-size:11px;color:var(--muted);font-weight:700;text-align:right;}
+.profit-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.profit-box{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;text-align:center;}
+.profit-box .v{font-family:var(--font-mono);font-size:18px;font-weight:900;}
+.profit-box .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+.profit-box.profit-main{background:var(--ink);color:#fff;border-color:var(--ink);}
+.profit-box.profit-main .l{color:#b8bec4;}
+.order-row .numbers{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11px;color:var(--muted);font-weight:700;}
+.order-row .numbers strong{color:var(--ink-soft);font-family:var(--font-mono);}
+.test-promo-card{border:1px dashed var(--tag-dark);background:var(--paper-dim);}
+@media (max-width:700px){.profit-summary{grid-template-columns:repeat(2,1fr);}.profit-controls{align-items:flex-start;flex-direction:column;}.profit-period{text-align:left;}}
+
 .tier-card-head{
   display:flex;align-items:center;justify-content:space-between;
   margin-bottom:12px;
@@ -1057,6 +1073,12 @@ input,textarea,select{font-family:inherit;}
           </form>
         </div>
 
+        <div class="form-card test-promo-card">
+          <h4>Quick test</h4>
+          <p class="marketing-note">Create a temporary <strong>TEST15</strong> promo valid today through the next 7 days: 15% off the entire cart, no minimum, 20 uses. Use it to test the customer checkout flow, then disable or delete it.</p>
+          <button type="button" class="ghost-btn" id="createTestPromoBtn">Create TEST15 test promo</button>
+        </div>
+
         <div class="form-card">
           <h4>Live promo poster</h4>
           <p class="marketing-note">Generate a separate PNG containing only promotions that are live right now. It includes the code, discount type/value, scope, minimum cart, validity, and remaining usage limit.</p>
@@ -1141,9 +1163,18 @@ input,textarea,select{font-family:inherit;}
 
       <!-- ORDERS PANE -->
       <div class="seller-pane" id="pane-orders">
-        <div class="today-summary">
-          <div class="stat-box"><div class="v" id="statToday">₹0</div><div class="l">Today's sales</div></div>
-          <div class="stat-box"><div class="v" id="statCount">0</div><div class="l">Orders today</div></div>
+        <div class="profit-controls">
+          <div class="profit-toggle">
+            <button type="button" id="profitTodayBtn" class="active">Today</button>
+            <button type="button" id="profitWeekBtn">This week</button>
+          </div>
+          <div class="profit-period" id="profitPeriodLabel">Today</div>
+        </div>
+        <div class="profit-summary">
+          <div class="profit-box"><div class="v" id="statSales">₹0</div><div class="l">Sales</div></div>
+          <div class="profit-box"><div class="v" id="statCost">₹0</div><div class="l">Cost</div></div>
+          <div class="profit-box profit-main"><div class="v" id="statProfit">₹0</div><div class="l">Profit</div></div>
+          <div class="profit-box"><div class="v" id="statCount">0</div><div class="l">Orders</div></div>
         </div>
         <div class="section-lbl">Recent orders</div>
         <div id="ordersList"></div>
@@ -3537,6 +3568,7 @@ let settings = {...DEFAULT_SETTINGS};
 let cart = {}; // id -> qty
 let promos = [];
 let appliedPromoCode = "";
+let profitPeriod = "today";
 let currentCategory = "All";
 let sellerAuthed = false;
 let pinBuffer = "";
@@ -4058,7 +4090,7 @@ async function confirmPaid(){
 
   const orderItems = Object.keys(cart).filter(id=>cart[id]>0).map(id=>{
     const it = items.find(i=>String(i.id)===String(id));
-    return { itemId: it.id, name: it.name, category:it.category, qty: cart[id], unitPrice: livePrice(it.price) };
+    return { itemId: it.id, name: it.name, category:it.category, qty: cart[id], unitPrice: livePrice(it.price), unitCost: Number(it.price)||0 };
   });
 
   // Re-check stock before finalizing the order.
@@ -4106,12 +4138,17 @@ async function confirmPaid(){
       await loadPromos();
     }
 
+  const orderCost = orderItems.reduce((sum,line)=>sum + (Number(line.unitCost)||0) * line.qty, 0);
+  const orderProfit = pricing.total - orderCost;
+
   await idbPut('orders', {
     timestamp: Date.now(),
     items: orderItems,
     subtotal: pricing.subtotal,
     discount: pricing.discount,
     total: pricing.total,
+    cost: orderCost,
+    profit: orderProfit,
     promo: promoRecord
   });
 
@@ -4391,6 +4428,21 @@ async function deletePromo(id){
   toast("Promo deleted");
 }
 
+async function createTestPromo(){
+  const existing=promos.find(p=>normalizePromoCode(p.code)==='TEST15');
+  if(existing){ toast('TEST15 already exists — use Edit or disable it'); return; }
+  const start=todayISO();
+  const d=new Date(); d.setDate(d.getDate()+7);
+  const end=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  await idbPut('promos',{
+    code:'TEST15',type:'percent',value:15,buy:0,get:0,scope:'cart',category:null,
+    minimumCartValue:0,validFrom:start,validUntil:end,usageLimit:20,usageCount:0,enabled:true
+  });
+  await loadPromos();
+  renderPromoList(); renderCustomerPromos(); renderCartDrawer();
+  toast('TEST15 created ✓');
+}
+
 function renderPromoPane(){
   fillPromoCategorySelect();
   if(!promoEditing) resetPromoForm();
@@ -4476,24 +4528,65 @@ async function toggleQuickAdd(id){
   renderQuickPickList();
 }
 
+function getWeekStartTimestamp(){
+  const d=new Date();
+  const day=d.getDay(); // Sunday=0
+  const diff=day===0 ? -6 : 1-day; // Monday start
+  d.setDate(d.getDate()+diff);
+  d.setHours(0,0,0,0);
+  return d.getTime();
+}
+function orderStoredCost(o){
+  if (Number.isFinite(Number(o.cost))) return Number(o.cost);
+  // Legacy orders created before cost was stored cannot be reconstructed safely
+  // if an item's base price has since changed.
+  if (Array.isArray(o.items) && o.items.every(l=>Number.isFinite(Number(l.unitCost)))){
+    return o.items.reduce((s,l)=>s+(Number(l.unitCost)||0)*(Number(l.qty)||0),0);
+  }
+  return null;
+}
+function orderStoredProfit(o){
+  if (Number.isFinite(Number(o.profit))) return Number(o.profit);
+  const cost=orderStoredCost(o);
+  return cost===null ? null : Number(o.total||0)-cost;
+}
+function updateProfitToggle(){
+  document.getElementById('profitTodayBtn').classList.toggle('active',profitPeriod==='today');
+  document.getElementById('profitWeekBtn').classList.toggle('active',profitPeriod==='week');
+}
 function renderOrdersLog(){
   idbAll('orders').then(orders=>{
     orders.sort((a,b)=>b.timestamp-a.timestamp);
+    const now=Date.now();
     const today = new Date(); today.setHours(0,0,0,0);
-    const todayOrders = orders.filter(o=>o.timestamp>=today.getTime());
-    const todayTotal = todayOrders.reduce((s,o)=>s+o.total,0);
-    document.getElementById('statToday').textContent = money(todayTotal);
-    document.getElementById('statCount').textContent = todayOrders.length;
-    const wrap = document.getElementById('ordersList');
-    if (orders.length===0){ wrap.innerHTML = `<p class="qp-note">No orders logged yet.</p>`; return; }
-    wrap.innerHTML = orders.slice(0,60).map(o=>{
-      const d = new Date(o.timestamp);
-      const time = d.toLocaleString('en-IN',{ day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
-      const summary = o.items.map(l=>`${l.qty}× ${l.name}`).join(', ');
-      const promoLine = o.promo ? ` · ${o.promo.code} saved ${money(o.discount||o.promo.discount||0)}` : '';
+    const start = profitPeriod==='today' ? today.getTime() : getWeekStartTimestamp();
+    const periodOrders = orders.filter(o=>o.timestamp>=start && o.timestamp<=now);
+    const sales = periodOrders.reduce((s,o)=>s+Number(o.total||0),0);
+    const costValues = periodOrders.map(orderStoredCost);
+    const knownCost = costValues.filter(v=>v!==null).reduce((s,v)=>s+v,0);
+    const profitValues = periodOrders.map(orderStoredProfit);
+    const knownProfit = profitValues.filter(v=>v!==null).reduce((s,v)=>s+v,0);
+    document.getElementById('statSales').textContent=money(sales);
+    document.getElementById('statCost').textContent=costValues.some(v=>v===null) ? '—' : money(knownCost);
+    document.getElementById('statProfit').textContent=profitValues.some(v=>v===null) ? '—' : money(knownProfit);
+    document.getElementById('statCount').textContent=periodOrders.length;
+    document.getElementById('profitPeriodLabel').textContent=profitPeriod==='today' ? 'Today' : `Mon ${new Date(start).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} → Today`;
+    updateProfitToggle();
+
+    const wrap=document.getElementById('ordersList');
+    if(orders.length===0){ wrap.innerHTML=`<p class="qp-note">No orders logged yet.</p>`; return; }
+    wrap.innerHTML=orders.slice(0,60).map(o=>{
+      const d=new Date(o.timestamp);
+      const time=d.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      const summary=o.items.map(l=>`${l.qty}× ${l.name}`).join(', ');
+      const cost=orderStoredCost(o);
+      const profit=orderStoredProfit(o);
+      const promoLine=o.promo ? ` · ${o.promo.code} saved ${money(o.discount||o.promo.discount||0)}` : '';
+      const finance=`Sales <strong>${money(o.total||0)}</strong> · Cost <strong>${cost===null?'—':money(cost)}</strong> · Profit <strong>${profit===null?'—':money(profit)}</strong>`;
       return `<div class="order-row">
-        <div class="top"><span class="time">${time}</span><span class="total">${money(o.total)}</span></div>
+        <div class="top"><span class="time">${time}</span><span class="total">${money(o.total||0)}</span></div>
         <div class="items">${escapeHtml(summary)}${promoLine ? `<br><strong>${escapeHtml(promoLine)}</strong>` : ''}</div>
+        <div class="numbers">${finance}</div>
       </div>`;
     }).join('');
   });
@@ -5042,6 +5135,10 @@ function bindEvents(){
   document.getElementById('settingsForm').addEventListener('submit', handleSaveSettings);
 
   document.getElementById('promoForm').addEventListener('submit', handlePromoSubmit);
+  document.getElementById('createTestPromoBtn').addEventListener('click', createTestPromo);
+
+  document.getElementById('profitTodayBtn').addEventListener('click', ()=>{ profitPeriod='today'; renderOrdersLog(); });
+  document.getElementById('profitWeekBtn').addEventListener('click', ()=>{ profitPeriod='week'; renderOrdersLog(); });
   document.getElementById('promoType').addEventListener('change', updatePromoFormVisibility);
   document.getElementById('promoScope').addEventListener('change', updatePromoFormVisibility);
   document.getElementById('cancelPromoEditBtn').addEventListener('click', resetPromoForm);
