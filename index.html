@@ -650,7 +650,11 @@ input,textarea,select{font-family:inherit;}
   background:#fff;border:1px solid var(--line);border-radius:13px;
   padding:12px 14px;margin-bottom:10px;
 }
-.order-row .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.order-row .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.order-row .order-actions{display:flex;align-items:center;gap:8px;}
+.order-row .order-remove{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--danger);font-size:23px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:500;}
+.order-row .order-remove:hover{background:rgba(232,73,29,.1);}
+.order-row .order-remove:active{transform:scale(.92);}
 .order-row .time{font-size:11.5px;color:var(--muted);font-weight:700;}
 .order-row .total{font-family:var(--font-mono);font-weight:800;font-size:15px;}
 .order-row .items{font-size:12px;color:var(--ink-soft);line-height:1.5;}
@@ -4554,6 +4558,20 @@ function updateProfitToggle(){
   document.getElementById('profitTodayBtn').classList.toggle('active',profitPeriod==='today');
   document.getElementById('profitWeekBtn').classList.toggle('active',profitPeriod==='week');
 }
+async function removeOrder(id){
+  const orderId = Number(id);
+  if (!Number.isFinite(orderId)) return;
+  const orders = await idbAll('orders');
+  const order = orders.find(o=>Number(o.id)===orderId);
+  if (!order) return;
+  const d = new Date(order.timestamp);
+  const label = d.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  if (!confirm(`Remove this order from sales history?\n\n${label} · ${money(order.total||0)}\n\nThis will also remove it from today's/weekly sales and profit totals.`)) return;
+  await idbDelete('orders', orderId);
+  toast('Order removed');
+  renderOrdersLog();
+}
+
 function renderOrdersLog(){
   idbAll('orders').then(orders=>{
     orders.sort((a,b)=>b.timestamp-a.timestamp);
@@ -4583,8 +4601,8 @@ function renderOrdersLog(){
       const profit=orderStoredProfit(o);
       const promoLine=o.promo ? ` · ${o.promo.code} saved ${money(o.discount||o.promo.discount||0)}` : '';
       const finance=`Sales <strong>${money(o.total||0)}</strong> · Cost <strong>${cost===null?'—':money(cost)}</strong> · Profit <strong>${profit===null?'—':money(profit)}</strong>`;
-      return `<div class="order-row">
-        <div class="top"><span class="time">${time}</span><span class="total">${money(o.total||0)}</span></div>
+      return `<div class="order-row" data-order-id="${o.id}">
+        <div class="top"><span class="time">${time}</span><span class="order-actions"><span class="total">${money(o.total||0)}</span><button type="button" class="order-remove" title="Remove order" aria-label="Remove order">×</button></span></div>
         <div class="items">${escapeHtml(summary)}${promoLine ? `<br><strong>${escapeHtml(promoLine)}</strong>` : ''}</div>
         <div class="numbers">${finance}</div>
       </div>`;
@@ -5139,6 +5157,12 @@ function bindEvents(){
 
   document.getElementById('profitTodayBtn').addEventListener('click', ()=>{ profitPeriod='today'; renderOrdersLog(); });
   document.getElementById('profitWeekBtn').addEventListener('click', ()=>{ profitPeriod='week'; renderOrdersLog(); });
+  document.getElementById('ordersList').addEventListener('click', e=>{
+    const btn=e.target.closest('.order-remove');
+    if(!btn) return;
+    const row=btn.closest('.order-row');
+    if(row) removeOrder(row.dataset.orderId);
+  });
   document.getElementById('promoType').addEventListener('change', updatePromoFormVisibility);
   document.getElementById('promoScope').addEventListener('change', updatePromoFormVisibility);
   document.getElementById('cancelPromoEditBtn').addEventListener('click', resetPromoForm);
