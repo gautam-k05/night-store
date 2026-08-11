@@ -359,6 +359,107 @@ input,textarea,select{font-family:inherit;}
 .checkout-btn:disabled{background:var(--line);color:var(--muted);}
 .checkout-btn:active:not(:disabled){transform:scale(.98);}
 
+
+/* ================= PROMOTIONS ================= */
+.promo-section{
+  padding:14px 18px 10px;
+  border-bottom:1px solid var(--line);
+  background:var(--paper-dim);
+}
+.promo-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:8px;
+}
+.promo-head .lbl{
+  font-size:11px;font-weight:900;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.promo-live-list{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;}
+.promo-live-card{
+  flex:0 0 auto;min-width:190px;max-width:240px;
+  background:#fff;border:1.5px solid var(--line);border-radius:12px;
+  padding:9px 11px;cursor:pointer;
+}
+.promo-live-card .code{font-family:var(--font-mono);font-weight:900;font-size:15px;}
+.promo-live-card .desc{font-size:11.5px;font-weight:700;margin-top:3px;}
+.promo-live-card .meta{font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.35;}
+.promo-input-row{display:flex;gap:8px;margin-top:6px;}
+.promo-input{
+  flex:1;min-width:0;border:1.5px solid var(--line);background:#fff;
+  border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;
+  text-transform:uppercase;color:var(--ink);
+}
+.promo-apply-btn{
+  background:var(--ink);color:#fff;border:none;border-radius:10px;
+  padding:10px 14px;font-size:13px;font-weight:800;cursor:pointer;
+}
+.promo-message{font-size:11.5px;margin-top:7px;font-weight:700;line-height:1.35;}
+.promo-message.ok{color:var(--leaf-dark);}
+.promo-message.err{color:var(--spice-dark);}
+.promo-applied{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:#EEF7F0;border:1px solid #C9E4CF;border-radius:10px;
+  padding:9px 11px;margin-top:8px;
+}
+.promo-applied .pa-main{min-width:0;}
+.promo-applied .pa-code{font-family:var(--font-mono);font-weight:900;font-size:14px;}
+.promo-applied .pa-detail{font-size:11px;color:var(--leaf-dark);font-weight:700;margin-top:2px;}
+.promo-remove{
+  background:none;border:none;color:var(--danger);font-size:12px;font-weight:800;cursor:pointer;
+  white-space:nowrap;
+}
+.discount-row .lbl{color:var(--leaf-dark);}
+.discount-row .val{color:var(--leaf-dark);font-family:var(--font-mono);font-size:18px;font-weight:800;}
+
+.promo-form .field-row{align-items:flex-start;}
+.promo-type-help{font-size:12px;color:var(--muted);line-height:1.45;margin:-3px 0 12px;}
+.promo-list{margin-top:10px;}
+.promo-admin-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:16px;margin-bottom:12px;
+}
+.promo-admin-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.promo-admin-code{font-family:var(--font-mono);font-size:20px;font-weight:900;}
+.promo-admin-status{
+  font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;
+  padding:5px 8px;border-radius:999px;background:var(--paper-dim);white-space:nowrap;
+}
+.promo-admin-status.active{background:#EAF6ED;color:var(--leaf-dark);}
+.promo-admin-status.scheduled{background:#FFF6D9;color:#8A6500;}
+.promo-admin-status.expired,.promo-admin-status.disabled{background:#F3ECE8;color:var(--muted);}
+.promo-admin-desc{font-size:14px;font-weight:800;margin-top:5px;}
+.promo-admin-meta{font-size:12px;color:var(--muted);line-height:1.55;margin-top:8px;}
+.promo-admin-actions{display:flex;gap:8px;margin-top:12px;}
+.promo-admin-actions button{flex:1;}
+.promo-admin-actions .danger{border-color:#E7C7C1;color:var(--danger);}
+
+.promo-preview-note{
+  background:var(--paper-dim);border-radius:11px;padding:10px 12px;
+  font-size:12px;color:var(--ink-soft);line-height:1.45;margin-bottom:12px;
+}
+
+.promo-png-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px;}
+@media(min-width:640px){
+  .promo-section{padding:18px 26px 12px;}
+  .promo-head .lbl{font-size:13px;}
+  .promo-live-card{min-width:240px;padding:12px 14px;}
+  .promo-live-card .code{font-size:17px;}
+  .promo-live-card .desc{font-size:13px;}
+  .promo-live-card .meta{font-size:12px;}
+  .promo-input{padding:13px 14px;font-size:16px;}
+  .promo-apply-btn{padding:13px 18px;font-size:15px;}
+  .promo-message{font-size:13px;}
+  .promo-applied{padding:12px 14px;}
+  .promo-applied .pa-code{font-size:17px;}
+  .promo-applied .pa-detail{font-size:13px;}
+  .discount-row .val{font-size:22px;}
+  .promo-admin-card{padding:20px;border-radius:18px;}
+  .promo-admin-code{font-size:24px;}
+  .promo-admin-desc{font-size:17px;}
+  .promo-admin-meta{font-size:14px;}
+  .promo-png-actions{grid-template-columns:1fr 1fr;gap:12px;}
+}
+
 /* ================= CHECKOUT / QR MODAL ================= */
 .modal-bg{
   position:fixed;inset:0;background:var(--ink);
@@ -377,6 +478,8 @@ input,textarea,select{font-family:inherit;}
 .qr-card .amount{
   font-family:var(--font-mono);font-size:38px;font-weight:800;margin:2px 0 2px;
 }
+.qr-summary{font-size:12px;color:var(--muted);font-weight:700;line-height:1.5;margin:2px 0 10px;}
+.qr-summary strong{color:var(--leaf-dark);}
 .qr-card .to{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:600;}
 .qr-box{
   background:#fff;border-radius:14px;padding:14px;
@@ -631,6 +734,7 @@ input,textarea,select{font-family:inherit;}
   .qr-box svg{max-width:360px;}
   .qr-card .amount{font-size:44px;}
   .qr-card .to{font-size:15px;}
+  .qr-summary{font-size:14px;}
   .qr-hint{font-size:14px;}
   .total-row{margin-bottom:16px;}
   .total-row .lbl{font-size:16px;}
@@ -730,8 +834,36 @@ input,textarea,select{font-family:inherit;}
       <div class="lbl">Quick add</div>
       <div class="quick-chips" id="quickChips"></div>
     </div>
+
+    <div class="promo-section" id="promoSection">
+      <div class="promo-head">
+        <span class="lbl">Promotions</span>
+      </div>
+      <div class="promo-live-list" id="promoLiveList"></div>
+      <div class="promo-input-row">
+        <input class="promo-input" id="promoInput" type="text" maxlength="24" placeholder="Enter promo code" autocomplete="off">
+        <button class="promo-apply-btn" id="applyPromoBtn">Apply</button>
+      </div>
+      <div class="promo-message" id="promoMessage"></div>
+      <div class="promo-applied" id="promoApplied" style="display:none">
+        <div class="pa-main">
+          <div class="pa-code" id="promoAppliedCode"></div>
+          <div class="pa-detail" id="promoAppliedDetail"></div>
+        </div>
+        <button class="promo-remove" id="removePromoBtn">Remove</button>
+      </div>
+    </div>
+
     <div class="cart-list" id="cartList"></div>
     <div class="drawer-foot">
+      <div class="total-row">
+        <span class="lbl">Subtotal</span>
+        <span class="val" id="cartSubtotalVal">₹0</span>
+      </div>
+      <div class="total-row discount-row" id="cartDiscountRow" style="display:none">
+        <span class="lbl" id="cartDiscountLabel">Promo discount</span>
+        <span class="val" id="cartDiscountVal">−₹0</span>
+      </div>
       <div class="total-row">
         <span class="lbl">Total</span>
         <span class="val" id="cartTotalVal">₹0</span>
@@ -744,6 +876,7 @@ input,textarea,select{font-family:inherit;}
   <div class="modal-bg" id="checkoutModal">
     <div class="qr-card">
       <div class="amount" id="qrAmount">₹0</div>
+      <div class="qr-summary" id="qrSummary"></div>
       <div class="to" id="qrTo">to store</div>
       <div class="qr-box" id="qrBox"></div>
       <div class="qr-hint">Scan with any UPI app to pay. The amount is pre-filled — no need to type anything.</div>
@@ -776,6 +909,7 @@ input,textarea,select{font-family:inherit;}
     <div class="seller-tabs">
       <button class="stab active" data-tab="items">Items</button>
       <button class="stab" data-tab="quick">Quick Picks</button>
+      <button class="stab" data-tab="promos">Promos</button>
       <button class="stab" data-tab="pricing">Pricing &amp; UPI</button>
       <button class="stab" data-tab="orders">Orders</button>
     </div>
@@ -833,6 +967,108 @@ input,textarea,select{font-family:inherit;}
       <div class="seller-pane" id="pane-quick">
         <p class="qp-note">Pick up to 3 items to feature as one-tap "quick add" shortcuts in the customer's cart — great for your best sellers.</p>
         <div id="quickPickList"></div>
+      </div>
+
+
+      <!-- PROMOTIONS PANE -->
+      <div class="seller-pane" id="pane-promos">
+        <div class="form-card">
+          <h4 id="promoFormTitle">Create promotion</h4>
+          <p class="qp-note">Create one customer-facing promo code. Only one promo can be used per order. Percentage and flat discounts apply after the current live selling price is calculated; Buy X Get Y makes the cheapest qualifying items free.</p>
+          <form id="promoForm" class="promo-form">
+            <input type="hidden" id="promoEditId">
+
+            <div class="field">
+              <label>Promo code</label>
+              <input type="text" id="promoCode" maxlength="24" placeholder="e.g. IND" required>
+            </div>
+
+            <div class="field">
+              <label>Promotion type</label>
+              <select id="promoType">
+                <option value="percent">Percentage discount</option>
+                <option value="flat">Flat discount (₹)</option>
+                <option value="bxgy">Buy X Get Y free</option>
+              </select>
+            </div>
+
+            <div class="field" id="promoValueField">
+              <label id="promoValueLabel">Discount (%)</label>
+              <input type="number" id="promoValue" min="0.01" step="0.01" placeholder="15">
+            </div>
+
+            <div class="field-row" id="bxgyFields" style="display:none">
+              <div class="field">
+                <label>Buy quantity</label>
+                <input type="number" id="promoBuy" min="1" step="1" placeholder="3">
+              </div>
+              <div class="field">
+                <label>Get free</label>
+                <input type="number" id="promoGet" min="1" step="1" placeholder="1">
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Applies to</label>
+              <select id="promoScope">
+                <option value="cart">Entire cart</option>
+                <option value="category">Specific category</option>
+              </select>
+            </div>
+
+            <div class="field" id="promoCategoryField" style="display:none">
+              <label>Category</label>
+              <select id="promoCategory"></select>
+            </div>
+
+            <div class="field">
+              <label>Minimum cart value (₹)</label>
+              <input type="number" id="promoMinCart" min="0" step="1" value="0">
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Valid from</label>
+                <input type="date" id="promoStart" required>
+              </div>
+              <div class="field">
+                <label>Valid until</label>
+                <input type="date" id="promoEnd" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Usage limit</label>
+              <input type="number" id="promoLimit" min="1" step="1" placeholder="20">
+              <div class="promo-type-help">Leave empty for unlimited uses. The limit can be changed later, but it cannot be set below the number of completed uses.</div>
+            </div>
+
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;margin:8px 0 14px;">
+              <input type="checkbox" id="promoEnabled" checked style="width:20px;height:20px;">
+              Promotion enabled
+            </label>
+
+            <div id="promoEditNote" class="promo-preview-note" style="display:none"></div>
+
+            <div class="field-row">
+              <button type="submit" class="primary-btn" id="savePromoBtn">Create Promo</button>
+              <button type="button" class="ghost-btn" id="cancelPromoEditBtn" style="display:none">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="form-card">
+          <h4>Live promo poster</h4>
+          <p class="marketing-note">Generate a separate PNG containing only promotions that are live right now. It includes the code, discount type/value, scope, minimum cart, validity, and remaining usage limit.</p>
+          <div class="promo-png-actions">
+            <button type="button" class="primary-btn" id="generatePromoPngBtn">Download PNG</button>
+            <button type="button" class="ghost-btn" id="sharePromoPngBtn">Share PNG</button>
+          </div>
+          <button type="button" class="ghost-btn" id="printPromoPngBtn">Print / Save as PDF</button>
+        </div>
+
+        <div class="section-lbl">All promotions</div>
+        <div id="promoList" class="promo-list"></div>
       </div>
 
       <!-- PRICING & UPI PANE -->
@@ -3273,7 +3509,7 @@ const DEFAULT_SETTINGS = {
 };
 
 /* ---------------- tiny IndexedDB wrapper ---------------- */
-const DB_NAME="hostelStoreDB", DB_VER=1;
+const DB_NAME="hostelStoreDB", DB_VER=2;
 let db;
 function openDB(){
   return new Promise((resolve,reject)=>{
@@ -3283,6 +3519,7 @@ function openDB(){
       if(!_db.objectStoreNames.contains('items')) _db.createObjectStore('items',{keyPath:'id',autoIncrement:true});
       if(!_db.objectStoreNames.contains('orders')) _db.createObjectStore('orders',{keyPath:'id',autoIncrement:true});
       if(!_db.objectStoreNames.contains('settings')) _db.createObjectStore('settings',{keyPath:'key'});
+      if(!_db.objectStoreNames.contains('promos')) _db.createObjectStore('promos',{keyPath:'id',autoIncrement:true});
     };
     req.onsuccess = e=>resolve(e.target.result);
     req.onerror = e=>reject(e.target.error);
@@ -3298,6 +3535,8 @@ function idbDelete(store,key){ return new Promise((res,rej)=>{ const r=tx(store,
 let items = [];
 let settings = {...DEFAULT_SETTINGS};
 let cart = {}; // id -> qty
+let promos = [];
+let appliedPromoCode = "";
 let currentCategory = "All";
 let sellerAuthed = false;
 let pinBuffer = "";
@@ -3308,6 +3547,7 @@ let pendingPinAction = null;
   db = await openDB();
   await loadSettings();
   await loadItems();
+  await loadPromos();
   renderCategoryChips();
   renderGrid();
   updatePriceWindowLabel();
@@ -3341,6 +3581,16 @@ async function loadItems(){
   items = await idbAll('items');
   items.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
 }
+async function loadPromos(){
+  promos = await idbAll('promos');
+  promos.sort((a,b)=>(a.code||"").localeCompare(b.code||""));
+  promos.forEach(p=>{
+    p.code = normalizePromoCode(p.code);
+    if (p.enabled === undefined) p.enabled = true;
+    if (p.usageCount === undefined) p.usageCount = 0;
+  });
+}
+function normalizePromoCode(code){ return String(code||"").trim().toUpperCase(); }
 
 /* ---------------- pricing ---------------- */
 function timeInWindow(cur, start, end){
@@ -3486,19 +3736,132 @@ function escapeHtml(s){
   return (s||"").replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function cartTotal(){
-  let total=0, count=0;
+function cartSubtotal(){
+  let subtotal=0, count=0;
   for (const id in cart){
     const it = items.find(i=>String(i.id)===String(id));
     if (!it) continue;
-    total += livePrice(it.price) * cart[id];
+    subtotal += livePrice(it.price) * cart[id];
     count += cart[id];
   }
-  return {total,count};
+  return {subtotal,count};
+}
+
+function promoDateLabel(p){
+  const from = formatPromoDate(p.validFrom);
+  const to = formatPromoDate(p.validUntil);
+  return from && to ? `${from} – ${to}` : "Date range not set";
+}
+function formatPromoDate(v){
+  if (!v) return "";
+  const [y,m,d] = String(v).split('-').map(Number);
+  if (!y || !m || !d) return "";
+  return new Date(y,m-1,d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+function todayISO(){
+  const d = new Date();
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function isPromoDateActive(p){
+  const today=todayISO();
+  return !!p.validFrom && !!p.validUntil && today>=p.validFrom && today<=p.validUntil;
+}
+function promoUsageRemaining(p){
+  if (p.usageLimit === null || p.usageLimit === undefined || p.usageLimit === "" || !Number.isFinite(Number(p.usageLimit))) return Infinity;
+  return Math.max(0, Number(p.usageLimit) - Number(p.usageCount||0));
+}
+function isPromoLive(p){
+  return !!p.enabled && isPromoDateActive(p) && promoUsageRemaining(p)>0;
+}
+function promoDescription(p){
+  if (p.type==='percent') return `${Number(p.value)}% off`;
+  if (p.type==='flat') return `${money(Number(p.value)||0)} off`;
+  const b=Number(p.buy)||0, g=Number(p.get)||0;
+  return `Buy ${b}, Get ${g} Free`;
+}
+function promoScopeLabel(p){
+  return p.scope==='category' ? (p.category || 'Specific category') : 'Entire cart';
+}
+function promoLimitLabel(p){
+  return promoUsageRemaining(p)===Infinity ? 'Unlimited uses' : `${promoUsageRemaining(p)} use${promoUsageRemaining(p)===1?'':'s'} left`;
+}
+function promoGeneralError(p){
+  if (!p) return "Promo code not found.";
+  if (!p.enabled) return "This promo is currently disabled.";
+  if (!isPromoDateActive(p)){
+    const today=todayISO();
+    if (p.validFrom && today<p.validFrom) return `This promo starts on ${formatPromoDate(p.validFrom)}.`;
+    if (p.validUntil && today>p.validUntil) return `This promo expired on ${formatPromoDate(p.validUntil)}.`;
+    return "This promo is outside its valid dates.";
+  }
+  if (promoUsageRemaining(p)<=0) return "This promo has reached its usage limit.";
+  return "";
+}
+
+function getPromoEligibleLines(p){
+  return Object.keys(cart).filter(id=>cart[id]>0).map(id=>{
+    const it=items.find(i=>String(i.id)===String(id));
+    if (!it) return null;
+    if (p.scope==='category' && it.category!==p.category) return null;
+    return {id:String(id),it,qty:cart[id],unitPrice:livePrice(it.price)};
+  }).filter(Boolean);
+}
+
+function calculatePromoDiscount(p){
+  const {subtotal} = cartSubtotal();
+  if (!p) return {discount:0, eligibleSubtotal:0, error:""};
+  const generalError=promoGeneralError(p);
+  if (generalError) return {discount:0, eligibleSubtotal:0, error:generalError};
+
+  const minCart=Number(p.minimumCartValue)||0;
+  if (subtotal < minCart){
+    return {discount:0,eligibleSubtotal:0,error:`Minimum cart value is ${money(minCart)}.`};
+  }
+
+  const lines=getPromoEligibleLines(p);
+  const eligibleSubtotal=lines.reduce((sum,l)=>sum+l.unitPrice*l.qty,0);
+  if (eligibleSubtotal<=0) return {discount:0,eligibleSubtotal:0,error:"This promo does not apply to anything in your cart."};
+
+  let discount=0;
+  if (p.type==='percent'){
+    discount=eligibleSubtotal*(Number(p.value)||0)/100;
+  } else if (p.type==='flat'){
+    discount=Math.min(eligibleSubtotal,Number(p.value)||0);
+  } else if (p.type==='bxgy'){
+    const buy=Math.max(1,parseInt(p.buy,10)||0);
+    const get=Math.max(1,parseInt(p.get,10)||0);
+    const groups=Math.floor(lines.reduce((sum,l)=>sum+l.qty,0)/(buy+get));
+    const freeQty=groups*get;
+    if (freeQty<=0) return {discount:0,eligibleSubtotal,error:`Buy ${buy} items to get ${get} free.`};
+    let remaining=freeQty;
+    const units=[];
+    lines.forEach(l=>{ for(let i=0;i<l.qty;i++) units.push(l.unitPrice); });
+    units.sort((a,b)=>a-b);
+    for(let i=0;i<units.length && remaining>0;i++,remaining--) discount+=units[i];
+  }
+  discount=Math.max(0,Math.min(discount,subtotal));
+  return {discount,eligibleSubtotal,error:""};
+}
+
+function getAppliedPromoResult(){
+  if (!appliedPromoCode) return {promo:null,discount:0,subtotal:cartSubtotal().subtotal,error:""};
+  const promo=promos.find(p=>normalizePromoCode(p.code)===appliedPromoCode);
+  if (!promo) return {promo:null,discount:0,subtotal:cartSubtotal().subtotal,error:"Promo code no longer exists."};
+  const {subtotal}=cartSubtotal();
+  const result=calculatePromoDiscount(promo);
+  return {promo,discount:result.discount,subtotal,error:result.error,eligibleSubtotal:result.eligibleSubtotal};
+}
+
+function cartPricing(){
+  const {subtotal,count}=cartSubtotal();
+  const result=getAppliedPromoResult();
+  const discount=result.error ? 0 : result.discount;
+  return {subtotal,discount,total:Math.max(0,subtotal-discount),count,promo:result.promo,promoError:result.error,eligibleSubtotal:result.eligibleSubtotal||0};
 }
 
 function updateCartFab(){
-  const {total,count} = cartTotal();
+  const {total,count}=cartPricing();
   const fab = document.getElementById('cartFab');
   fab.classList.toggle('empty', count===0);
   document.getElementById('cartBadge').textContent = count;
@@ -3516,13 +3879,82 @@ function addToCart(id, qty=1){
   renderCartDrawer();
 }
 
+/* ================= PROMO CUSTOMER UI ================= */
+function renderCustomerPromos(){
+  const list=document.getElementById('promoLiveList');
+  const live=promos.filter(isPromoLive);
+  if (!live.length){
+    list.innerHTML=`<div style="font-size:11.5px;color:var(--muted);padding:3px 0 5px;">No live promo codes right now.</div>`;
+  } else {
+    list.innerHTML=live.map(p=>{
+      const scope=promoScopeLabel(p);
+      const min=(Number(p.minimumCartValue)||0)>0 ? ` · Min ${money(p.minimumCartValue)}` : "";
+      return `<button type="button" class="promo-live-card" data-code="${escapeHtml(p.code)}">
+        <div class="code">${escapeHtml(p.code)}</div>
+        <div class="desc">${escapeHtml(promoDescription(p))} · ${escapeHtml(scope)}</div>
+        <div class="meta">${escapeHtml(promoLimitLabel(p))}${min}<br>${escapeHtml(promoDateLabel(p))}</div>
+      </button>`;
+    }).join('');
+  }
+}
+function setPromoMessage(msg, ok=false){
+  const el=document.getElementById('promoMessage');
+  el.textContent=msg||"";
+  el.className="promo-message"+(msg?(ok?" ok":" err"):"");
+}
+function renderAppliedPromo(){
+  const applied=document.getElementById('promoApplied');
+  const result=getAppliedPromoResult();
+  if (!result.promo){
+    applied.style.display='none';
+    return;
+  }
+  applied.style.display='flex';
+  document.getElementById('promoAppliedCode').textContent=result.promo.code;
+  const desc=promoDescription(result.promo);
+  if (result.error){
+    document.getElementById('promoAppliedDetail').textContent=`${desc} · ${result.error}`;
+  } else {
+    document.getElementById('promoAppliedDetail').textContent=`${desc} · saving ${money(result.discount)}${result.promo.scope==='category'?` on ${result.promo.category}`:''}`;
+  }
+}
+function applyPromoCode(code){
+  const normalized=normalizePromoCode(code);
+  if (!normalized){ setPromoMessage("Enter a promo code."); return; }
+  const promo=promos.find(p=>normalizePromoCode(p.code)===normalized);
+  const general=promoGeneralError(promo);
+  if (general){ setPromoMessage(general); return; }
+  const result=calculatePromoDiscount(promo);
+  if (result.error){ setPromoMessage(`${promo.code}: ${result.error}`); return; }
+  appliedPromoCode=normalized;
+  document.getElementById('promoInput').value=normalized;
+  setPromoMessage(`${promo.code} applied — saving ${money(result.discount)}.`,true);
+  renderCartDrawer();
+}
+function removePromo(){
+  appliedPromoCode="";
+  document.getElementById('promoInput').value="";
+  setPromoMessage("");
+  renderCartDrawer();
+}
+
 /* ================= CART DRAWER ================= */
 function renderCartDrawer(){
-  const {total,count} = cartTotal();
-  document.getElementById('cartTotalVal').textContent = money(total);
-  document.getElementById('checkoutBtn').disabled = count===0;
+  const pricing=cartPricing();
+  document.getElementById('cartSubtotalVal').textContent = money(pricing.subtotal);
+  document.getElementById('cartTotalVal').textContent = money(pricing.total);
+  const discountRow=document.getElementById('cartDiscountRow');
+  discountRow.style.display=pricing.discount>0?'flex':'none';
+  document.getElementById('cartDiscountVal').textContent = "−"+money(pricing.discount);
+  document.getElementById('cartDiscountLabel').textContent = pricing.promo ? `${pricing.promo.code} discount` : "Promo discount";
+  document.getElementById('checkoutBtn').disabled = pricing.count===0;
 
-  // quick add
+  renderCustomerPromos();
+  renderAppliedPromo();
+  if (pricing.promoError && appliedPromoCode){
+    setPromoMessage(`${appliedPromoCode}: ${pricing.promoError}`);
+  }
+
   const quickItems = items.filter(i=>i.quickAdd && i.qty>0);
   const qrow = document.getElementById('quickRow');
   if (quickItems.length===0){ qrow.style.display='none'; }
@@ -3530,7 +3962,6 @@ function renderCartDrawer(){
     qrow.style.display='block';
     document.getElementById('quickChips').innerHTML = quickItems.map(it=>{
       const price = livePrice(it.price);
-      const photo = it.photo ? `<img src="${it.photo}" alt="">` : `<span class="ph">${CAT_ICON[it.category]||'🍬'}</span>`;
       return `<div class="quick-chip" data-id="${it.id}">
         ${it.photo?`<img src="${it.photo}">`:`<span class="ph">${CAT_ICON[it.category]||'🍬'}</span>`}
         <div>
@@ -3591,15 +4022,23 @@ function buildUpiUri(amount){
 }
 
 function openCheckout(){
-  const {total,count} = cartTotal();
-  if (count===0) return;
+  const pricing=cartPricing();
+  if (pricing.count===0) return;
+  if (pricing.promoError && appliedPromoCode){
+    toast(pricing.promoError);
+    renderCartDrawer();
+    return;
+  }
   if (!settings.upiId){
     toast("Seller hasn't set a UPI ID yet");
     return;
   }
-  document.getElementById('qrAmount').textContent = money(total);
+  document.getElementById('qrAmount').textContent = money(pricing.total);
+  document.getElementById('qrSummary').innerHTML = pricing.discount>0
+    ? `Subtotal ${money(pricing.subtotal)} · <strong>${escapeHtml(pricing.promo.code)} saved ${money(pricing.discount)}</strong>`
+    : `Subtotal ${money(pricing.subtotal)}`;
   document.getElementById('qrTo').textContent = "to " + (settings.payeeName || settings.shopName) + " · " + settings.upiId;
-  const uri = buildUpiUri(total);
+  const uri = buildUpiUri(pricing.total);
   const qr = qrcode(0, 'M');
   qr.addData(uri);
   qr.make();
@@ -3608,12 +4047,40 @@ function openCheckout(){
 }
 
 async function confirmPaid(){
-  const {total} = cartTotal();
+  const pricing=cartPricing();
+  if (pricing.count===0) return;
+  if (pricing.promoError && appliedPromoCode){
+    toast(pricing.promoError);
+    document.getElementById('checkoutModal').classList.remove('show');
+    renderCartDrawer();
+    return;
+  }
+
   const orderItems = Object.keys(cart).filter(id=>cart[id]>0).map(id=>{
     const it = items.find(i=>String(i.id)===String(id));
-    return { itemId: it.id, name: it.name, qty: cart[id], unitPrice: livePrice(it.price) };
+    return { itemId: it.id, name: it.name, category:it.category, qty: cart[id], unitPrice: livePrice(it.price) };
   });
-  // deduct stock
+
+  // Re-check stock before finalizing the order.
+  for (const line of orderItems){
+    const it = items.find(i=>String(i.id)===String(line.itemId));
+    if (!it || (it.qty||0) < line.qty){
+      toast(`Not enough stock for ${line.name}`);
+      return;
+    }
+  }
+
+  let promoRecord=null;
+  let storedPromo=null;
+  if (pricing.promo && pricing.discount>0){
+    storedPromo=promos.find(p=>p.id===pricing.promo.id);
+    if (storedPromo && promoUsageRemaining(storedPromo)!==Infinity && promoUsageRemaining(storedPromo)<=0){
+      toast("Promo usage limit has been reached");
+      return;
+    }
+  }
+
+  // Deduct stock.
   for (const line of orderItems){
     const it = items.find(i=>String(i.id)===String(line.itemId));
     if (it){
@@ -3621,11 +4088,39 @@ async function confirmPaid(){
       await idbPut('items', it);
     }
   }
-  await idbPut('orders', { timestamp: Date.now(), items: orderItems, total });
+
+  if (pricing.promo && pricing.discount>0 && storedPromo){
+      storedPromo.usageCount=Number(storedPromo.usageCount||0)+1;
+      await idbPut('promos',storedPromo);
+      promoRecord={
+        id:storedPromo.id,
+        code:storedPromo.code,
+        type:storedPromo.type,
+        value:storedPromo.value||0,
+        buy:storedPromo.buy||0,
+        get:storedPromo.get||0,
+        scope:storedPromo.scope,
+        category:storedPromo.category||null,
+        discount:pricing.discount
+      };
+      await loadPromos();
+    }
+
+  await idbPut('orders', {
+    timestamp: Date.now(),
+    items: orderItems,
+    subtotal: pricing.subtotal,
+    discount: pricing.discount,
+    total: pricing.total,
+    promo: promoRecord
+  });
+
   cart = {};
+  appliedPromoCode="";
   document.getElementById('checkoutModal').classList.remove('show');
   closeDrawer();
   renderGrid();
+  renderCartDrawer();
   toast("Order logged ✓");
 }
 
@@ -3687,7 +4182,219 @@ function switchSellerTab(tab){
   document.querySelectorAll('.seller-pane').forEach(p=>p.classList.toggle('active', p.id==='pane-'+tab));
   if (tab==='items') renderStockList();
   if (tab==='quick') renderQuickPickList();
+  if (tab==='promos') renderPromoPane();
   if (tab==='orders') renderOrdersLog();
+}
+
+
+/* ================= SELLER: PROMOTIONS ================= */
+let promoEditing = false;
+
+function getPromoStatus(p){
+  if (!p.enabled) return {key:'disabled',label:'Disabled'};
+  if (!p.validFrom || !p.validUntil) return {key:'disabled',label:'No dates'};
+  const today=todayISO();
+  if (today<p.validFrom) return {key:'scheduled',label:'Scheduled'};
+  if (today>p.validUntil) return {key:'expired',label:'Expired'};
+  if (promoUsageRemaining(p)<=0) return {key:'expired',label:'Used up'};
+  return {key:'active',label:'Live now'};
+}
+
+function renderPromoList(){
+  const wrap=document.getElementById('promoList');
+  if (!promos.length){
+    wrap.innerHTML=`<p class="qp-note">No promo codes yet. Create your first promotion above.</p>`;
+    return;
+  }
+  const sorted=[...promos].sort((a,b)=>{
+    const sa=getPromoStatus(a).key==='active'?0:1;
+    const sb=getPromoStatus(b).key==='active'?0:1;
+    return sa-sb || (a.code||'').localeCompare(b.code||'');
+  });
+  wrap.innerHTML=sorted.map(p=>{
+    const st=getPromoStatus(p);
+    const min=(Number(p.minimumCartValue)||0)>0 ? `Minimum cart: ${money(p.minimumCartValue)}` : 'No minimum cart';
+    const usage=promoLimitLabel(p);
+    const scope=promoScopeLabel(p);
+    const detail=p.type==='bxgy' ? `Buy ${p.buy}, get ${p.get} free` : promoDescription(p);
+    return `<div class="promo-admin-card" data-id="${p.id}">
+      <div class="promo-admin-top">
+        <div>
+          <div class="promo-admin-code">${escapeHtml(p.code)}</div>
+          <div class="promo-admin-desc">${escapeHtml(detail)} · ${escapeHtml(scope)}</div>
+        </div>
+        <span class="promo-admin-status ${st.key}">${st.label}</span>
+      </div>
+      <div class="promo-admin-meta">
+        Valid: ${escapeHtml(promoDateLabel(p))}<br>
+        ${escapeHtml(min)} · ${escapeHtml(usage)}<br>
+        ${p.type==='bxgy' ? 'Discount rule: cheapest qualifying item(s) are free.' : 'Discount is calculated after current live selling prices.'}
+      </div>
+      <div class="promo-admin-actions">
+        <button type="button" class="ghost-btn promo-edit-btn" data-id="${p.id}">Edit</button>
+        <button type="button" class="ghost-btn promo-toggle-btn" data-id="${p.id}">${p.enabled?'Disable':'Enable'}</button>
+        <button type="button" class="ghost-btn danger promo-delete-btn" data-id="${p.id}">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fillPromoCategorySelect(){
+  document.getElementById('promoCategory').innerHTML=CATEGORIES.map(c=>`<option value="${escapeHtml(c)}">${CAT_ICON[c]||''} ${escapeHtml(c)}</option>`).join('');
+}
+
+function updatePromoFormVisibility(){
+  const type=document.getElementById('promoType').value;
+  const scope=document.getElementById('promoScope').value;
+  const bxgy=type==='bxgy';
+  document.getElementById('promoValueField').style.display=bxgy?'none':'block';
+  document.getElementById('bxgyFields').style.display=bxgy?'flex':'none';
+  document.getElementById('promoCategoryField').style.display=scope==='category'?'block':'none';
+  if (type==='percent') document.getElementById('promoValueLabel').textContent='Discount (%)';
+  else if (type==='flat') document.getElementById('promoValueLabel').textContent='Discount (₹)';
+}
+
+function resetPromoForm(){
+  promoEditing=false;
+  document.getElementById('promoForm').reset();
+  document.getElementById('promoEditId').value="";
+  document.getElementById('promoFormTitle').textContent="Create promotion";
+  document.getElementById('savePromoBtn').textContent="Create Promo";
+  document.getElementById('cancelPromoEditBtn').style.display='none';
+  document.getElementById('promoEnabled').checked=true;
+  document.getElementById('promoMinCart').value="0";
+  document.getElementById('promoValue').value="";
+  document.getElementById('promoBuy').value="3";
+  document.getElementById('promoGet').value="1";
+  fillPromoCategorySelect();
+  updatePromoFormVisibility();
+  document.getElementById('promoEditNote').style.display='none';
+}
+
+function editPromo(id){
+  const p=promos.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  promoEditing=true;
+  document.getElementById('promoEditId').value=p.id;
+  document.getElementById('promoCode').value=p.code;
+  document.getElementById('promoType').value=p.type||'percent';
+  document.getElementById('promoValue').value=p.value||"";
+  document.getElementById('promoBuy').value=p.buy||3;
+  document.getElementById('promoGet').value=p.get||1;
+  document.getElementById('promoScope').value=p.scope||'cart';
+  fillPromoCategorySelect();
+  document.getElementById('promoCategory').value=p.category||CATEGORIES[0];
+  document.getElementById('promoMinCart').value=Number(p.minimumCartValue)||0;
+  document.getElementById('promoStart').value=p.validFrom||"";
+  document.getElementById('promoEnd').value=p.validUntil||"";
+  document.getElementById('promoLimit').value=(p.usageLimit===null||p.usageLimit===undefined)?"":p.usageLimit;
+  document.getElementById('promoEnabled').checked=p.enabled!==false;
+  document.getElementById('promoFormTitle').textContent=`Edit ${p.code}`;
+  document.getElementById('savePromoBtn').textContent="Save Changes";
+  document.getElementById('cancelPromoEditBtn').style.display='block';
+  const used=Number(p.usageCount||0);
+  const note=document.getElementById('promoEditNote');
+  note.style.display='block';
+  note.textContent=`Completed uses: ${used}. The usage limit cannot be reduced below ${used}.`;
+  updatePromoFormVisibility();
+  document.getElementById('promoCode').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function handlePromoSubmit(e){
+  e.preventDefault();
+  const idRaw=document.getElementById('promoEditId').value;
+  const code=normalizePromoCode(document.getElementById('promoCode').value);
+  const type=document.getElementById('promoType').value;
+  const scope=document.getElementById('promoScope').value;
+  const category=scope==='category'?document.getElementById('promoCategory').value:null;
+  const start=document.getElementById('promoStart').value;
+  const end=document.getElementById('promoEnd').value;
+  const minCart=Number(document.getElementById('promoMinCart').value)||0;
+  const enabled=document.getElementById('promoEnabled').checked;
+  const existing=promos.find(p=>String(p.id)===String(idRaw));
+  if(!code){ toast("Enter a promo code"); return; }
+  if(!start || !end || end<start){ toast("Choose a valid inclusive date range"); return; }
+  if(type==='percent'){
+    const v=Number(document.getElementById('promoValue').value);
+    if(!Number.isFinite(v) || v<=0 || v>100){ toast("Percentage must be between 0 and 100"); return; }
+  }
+  if(type==='flat'){
+    const v=Number(document.getElementById('promoValue').value);
+    if(!Number.isFinite(v) || v<=0){ toast("Enter a flat discount amount"); return; }
+  }
+  if(type==='bxgy'){
+    const b=parseInt(document.getElementById('promoBuy').value,10);
+    const g=parseInt(document.getElementById('promoGet').value,10);
+    if(!b || !g || b<1 || g<1){ toast("Buy and Get quantities must be at least 1"); return; }
+  }
+
+  const duplicate=promos.find(p=>normalizePromoCode(p.code)===code && String(p.id)!==String(idRaw));
+  if(duplicate){ toast("That promo code already exists"); return; }
+
+  let usageLimit=document.getElementById('promoLimit').value.trim();
+  usageLimit=usageLimit===""?null:parseInt(usageLimit,10);
+  if(usageLimit!==null && (!Number.isInteger(usageLimit) || usageLimit<1)){ toast("Usage limit must be a positive whole number"); return; }
+
+  const usageCount=Number(existing?.usageCount||0);
+  if(usageLimit!==null && usageLimit<usageCount){
+    toast(`Usage limit cannot be below ${usageCount} completed uses`);
+    return;
+  }
+
+  const promo={
+    ...(existing||{}),
+    ...(idRaw?{id:Number(idRaw)}:{}),
+    code,
+    type,
+    value:type==='bxgy'?0:Number(document.getElementById('promoValue').value)||0,
+    buy:type==='bxgy'?parseInt(document.getElementById('promoBuy').value,10)||1:0,
+    get:type==='bxgy'?parseInt(document.getElementById('promoGet').value,10)||1:0,
+    scope,
+    category,
+    minimumCartValue:minCart,
+    validFrom:start,
+    validUntil:end,
+    usageLimit,
+    usageCount,
+    enabled
+  };
+  await idbPut('promos',promo);
+  await loadPromos();
+  resetPromoForm();
+  renderPromoList();
+  renderCustomerPromos();
+  renderCartDrawer();
+  toast(existing?"Promo updated ✓":"Promo created ✓");
+}
+
+async function togglePromo(id){
+  const p=promos.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  p.enabled=!p.enabled;
+  await idbPut('promos',p);
+  await loadPromos();
+  renderPromoList();
+  renderCustomerPromos();
+  renderCartDrawer();
+  toast(p.enabled?"Promo enabled":"Promo disabled");
+}
+async function deletePromo(id){
+  const p=promos.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  if(!confirm(`Delete promo "${p.code}" permanently?`)) return;
+  await idbDelete('promos',p.id);
+  if(appliedPromoCode===normalizePromoCode(p.code)) appliedPromoCode="";
+  await loadPromos();
+  renderPromoList();
+  renderCustomerPromos();
+  renderCartDrawer();
+  toast("Promo deleted");
+}
+
+function renderPromoPane(){
+  fillPromoCategorySelect();
+  if(!promoEditing) resetPromoForm();
+  renderPromoList();
 }
 
 function renderStockList(){
@@ -3783,9 +4490,10 @@ function renderOrdersLog(){
       const d = new Date(o.timestamp);
       const time = d.toLocaleString('en-IN',{ day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
       const summary = o.items.map(l=>`${l.qty}× ${l.name}`).join(', ');
+      const promoLine = o.promo ? ` · ${o.promo.code} saved ${money(o.discount||o.promo.discount||0)}` : '';
       return `<div class="order-row">
         <div class="top"><span class="time">${time}</span><span class="total">${money(o.total)}</span></div>
-        <div class="items">${escapeHtml(summary)}</div>
+        <div class="items">${escapeHtml(summary)}${promoLine ? `<br><strong>${escapeHtml(promoLine)}</strong>` : ''}</div>
       </div>`;
     }).join('');
   });
@@ -4132,6 +4840,130 @@ async function printMarketingPoster(){
   w.document.close();
 }
 
+
+/* ================= LIVE PROMO PNG ================= */
+function promoPosterDetailLines(p){
+  const lines=[];
+  lines.push(`${promoDescription(p)} · ${promoScopeLabel(p)}`);
+  if (p.type==='bxgy') lines.push('Cheapest qualifying item(s) are free.');
+  const min=(Number(p.minimumCartValue)||0)>0 ? `Minimum cart: ${money(p.minimumCartValue)}` : 'No minimum cart value';
+  lines.push(min);
+  lines.push(`Valid: ${promoDateLabel(p)}`);
+  lines.push(`Usage: ${p.usageLimit===null||p.usageLimit===undefined ? 'Unlimited' : `${Number(p.usageCount||0)} used of ${Number(p.usageLimit)} · ${promoUsageRemaining(p)} remaining`}`);
+  return lines;
+}
+async function buildPromoPoster(){
+  const live=promos.filter(isPromoLive).sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+  if(!live.length){
+    toast("No live promo codes right now");
+    return null;
+  }
+  const W=1080, M=64, HEADER_H=190, CARD_H=250, GAP=18, FOOTER_H=110;
+  const H=HEADER_H + live.length*CARD_H + Math.max(0,live.length-1)*GAP + FOOTER_H;
+  const canvas=document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#FFFBF2'; ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle='#16191C'; ctx.fillRect(0,0,W,HEADER_H);
+  ctx.fillStyle='#FFC93C';
+  ctx.font='800 52px Arial, sans-serif';
+  ctx.fillText(settings.shopName||'Hostel Store',M,70);
+  ctx.fillStyle='#FFFFFF';
+  ctx.font='800 34px Arial, sans-serif';
+  ctx.fillText('LIVE PROMO CODES',M,120);
+  ctx.fillStyle='#B9B3A4';
+  ctx.font='500 22px Arial, sans-serif';
+  ctx.fillText(`Updated ${new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}`,M,158);
+
+  let y=HEADER_H+22;
+  for(const p of live){
+    ctx.fillStyle='#FFFFFF';
+    ctx.strokeStyle='#E7DFC9';
+    ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(M,y,W-M*2,CARD_H,22); ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle='#16191C';
+    ctx.font='900 38px Arial, sans-serif';
+    ctx.fillText(p.code,M+28,y+52);
+
+    ctx.fillStyle='#E8491D';
+    ctx.font='800 28px Arial, sans-serif';
+    ctx.fillText(promoDescription(p),M+28,y+92);
+
+    ctx.fillStyle='#2A2E33';
+    ctx.font='700 22px Arial, sans-serif';
+    const scopeText=`Applies to: ${promoScopeLabel(p)}`;
+    ctx.fillText(scopeText,M+28,y+128);
+
+    ctx.fillStyle='#6F6A5D';
+    ctx.font='600 19px Arial, sans-serif';
+    const details=promoPosterDetailLines(p);
+    details.forEach((line,i)=>{
+      const maxW=W-M*2-56;
+      const lines=escapeCanvasText(ctx,line,maxW,'600 18px Arial, sans-serif');
+      lines.slice(0,1).forEach((ln)=>ctx.fillText(ln,M+28,y+156+i*22));
+    });
+
+    y+=CARD_H+GAP;
+  }
+
+  ctx.fillStyle='#16191C'; ctx.fillRect(0,y,W,FOOTER_H);
+  ctx.fillStyle='#FFC93C';
+  ctx.font='800 22px Arial, sans-serif';
+  ctx.fillText('Use one promo code per order · Check the minimum cart and usage limit before applying.',M,y+46);
+  ctx.fillStyle='#FFFFFF';
+  ctx.font='600 18px Arial, sans-serif';
+  ctx.fillText('All discounts are applied after current live selling prices are calculated.',M,y+78);
+  return canvas;
+}
+
+async function generatePromoPNG(){
+  const canvas=await buildPromoPoster();
+  if(!canvas) return null;
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob){toast("Could not create promo PNG");return null;}
+  const slug=(settings.shopName||'hostel-store').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase();
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`${slug}-live-promos.png`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Promo PNG ready ✓");
+  return {blob,canvas};
+}
+async function sharePromoPNG(){
+  const canvas=await buildPromoPoster();
+  if(!canvas) return;
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob) return;
+  const slug=(settings.shopName||'hostel-store').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+  const file=new File([blob],`${slug}-live-promos.png`,{type:'image/png'});
+  if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+    try{
+      await navigator.share({title:`${settings.shopName||'Hostel Store'} — Live Promos`,text:'Live promo codes',files:[file]});
+      toast("Share sheet opened"); return;
+    }catch(e){ if(e&&e.name==='AbortError') return; }
+  }
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=file.name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("PNG downloaded — attach it to WhatsApp");
+}
+function buildPromoPrintHTML(canvas){
+  const dataUrl=canvas.toDataURL('image/png');
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(settings.shopName||'Hostel Store')} Live Promos</title>
+  <style>html,body{margin:0;padding:0;background:#fff;}body{display:flex;justify-content:center;}img{width:100%;max-width:1080px;height:auto;display:block;}@page{size:auto;margin:0;}</style>
+  </head><body><img src="${dataUrl}" onload="setTimeout(()=>window.print(),150)"></body></html>`;
+}
+async function printPromoPoster(){
+  const canvas=await buildPromoPoster();
+  if(!canvas) return;
+  const w=window.open('','_blank');
+  if(!w){toast("Allow pop-ups to print the promo poster");return;}
+  w.document.open(); w.document.write(buildPromoPrintHTML(canvas)); w.document.close();
+}
+
 /* ================= EVENT BINDING ================= */
 function bindEvents(){
   document.getElementById('chipRow').addEventListener('click', e=>{
@@ -4209,6 +5041,33 @@ function bindEvents(){
 
   document.getElementById('settingsForm').addEventListener('submit', handleSaveSettings);
 
+  document.getElementById('promoForm').addEventListener('submit', handlePromoSubmit);
+  document.getElementById('promoType').addEventListener('change', updatePromoFormVisibility);
+  document.getElementById('promoScope').addEventListener('change', updatePromoFormVisibility);
+  document.getElementById('cancelPromoEditBtn').addEventListener('click', resetPromoForm);
+  document.getElementById('promoList').addEventListener('click', e=>{
+    const id=e.target.closest('[data-id]')?.dataset.id;
+    if(!id) return;
+    if(e.target.closest('.promo-edit-btn')) editPromo(id);
+    else if(e.target.closest('.promo-toggle-btn')) togglePromo(id);
+    else if(e.target.closest('.promo-delete-btn')) deletePromo(id);
+  });
+  document.getElementById('generatePromoPngBtn').addEventListener('click', generatePromoPNG);
+  document.getElementById('sharePromoPngBtn').addEventListener('click', sharePromoPNG);
+  document.getElementById('printPromoPngBtn').addEventListener('click', printPromoPoster);
+
+  document.getElementById('promoLiveList').addEventListener('click', e=>{
+    const card=e.target.closest('.promo-live-card');
+    if(!card) return;
+    document.getElementById('promoInput').value=card.dataset.code||"";
+    applyPromoCode(card.dataset.code||"");
+  });
+  document.getElementById('applyPromoBtn').addEventListener('click', ()=>applyPromoCode(document.getElementById('promoInput').value));
+  document.getElementById('promoInput').addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ e.preventDefault(); applyPromoCode(e.target.value); }
+  });
+  document.getElementById('removePromoBtn').addEventListener('click', removePromo);
+
   document.getElementById('generatePngBtn').addEventListener('click', generateMarketingPNG);
   document.getElementById('sharePngBtn').addEventListener('click', shareMarketingPNG);
   document.getElementById('printPosterBtn').addEventListener('click', printMarketingPoster);
@@ -4227,6 +5086,8 @@ function bindEvents(){
 
   // fill category select
   document.getElementById('newItemCat').innerHTML = CATEGORIES.map(c=>`<option value="${c}">${CAT_ICON[c]} ${c}</option>`).join('');
+  fillPromoCategorySelect();
+  updatePromoFormVisibility();
 }
 
 </script>
