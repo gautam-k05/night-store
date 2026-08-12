@@ -624,6 +624,13 @@ input,textarea,select{font-family:inherit;}
   background:none;border:none;color:var(--danger);font-size:16px;cursor:pointer;
   width:28px;height:28px;flex-shrink:0;
 }
+.stock-item .edit{
+  background:none;border:1.5px solid var(--line);color:var(--ink-soft);font-size:13px;font-weight:800;
+  cursor:pointer;width:34px;height:34px;border-radius:9px;flex-shrink:0;
+}
+.stock-item .edit:active{background:var(--paper-dim);}
+#addItemForm .field-row > .primary-btn,#addItemForm .field-row > .ghost-btn{margin-top:0;}
+
 .section-lbl{
   font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;
   letter-spacing:.06em;margin:18px 0 10px;
@@ -953,6 +960,7 @@ input,textarea,select{font-family:inherit;}
         <div class="form-card">
           <h4>Add a new item</h4>
           <form id="addItemForm">
+            <input type="hidden" id="itemEditId">
             <div class="photo-picker">
               <div class="photo-preview" id="photoPreview">📷</div>
               <label class="photo-btn">
@@ -970,15 +978,22 @@ input,textarea,select{font-family:inherit;}
             </div>
             <div class="field-row">
               <div class="field">
-                <label>Price (₹)</label>
-                <input type="number" id="newItemPrice" placeholder="20" min="0" step="0.5" required>
+                <label>Cost price (₹)</label>
+                <input type="number" id="newItemCost" placeholder="15" min="0" step="0.01" required>
               </div>
               <div class="field">
-                <label>Quantity in stock</label>
-                <input type="number" id="newItemQty" placeholder="10" min="0" step="1" required>
+                <label>MRP (₹)</label>
+                <input type="number" id="newItemMrp" placeholder="20" min="0" step="0.01" required>
               </div>
             </div>
-            <button class="primary-btn" type="submit">Add Item</button>
+            <div class="field">
+              <label>Quantity in stock</label>
+              <input type="number" id="newItemQty" placeholder="10" min="0" step="1" required>
+            </div>
+            <div class="field-row">
+              <button class="primary-btn" id="itemSaveBtn" type="submit">Add Item</button>
+              <button class="ghost-btn" id="itemCancelEditBtn" type="button" style="display:none">Cancel edit</button>
+            </div>
           </form>
         </div>
       </div>
@@ -3615,6 +3630,14 @@ async function saveSetting(key,value){
 }
 async function loadItems(){
   items = await idbAll('items');
+  // Migrate legacy items: the old `price` field represented cost/base price.
+  // Preserve the existing customer price behavior by initially treating that value as both cost and MRP.
+  for (const it of items){
+    let changed=false;
+    if (it.costPrice === undefined){ it.costPrice = Number(it.price)||0; changed=true; }
+    if (it.mrp === undefined){ it.mrp = Number(it.price ?? it.costPrice)||0; changed=true; }
+    if (changed) await idbPut('items',it);
+  }
   items.sort((a,b)=> (a.name||"").localeCompare(b.name||""));
 }
 async function loadPromos(){
@@ -3652,6 +3675,8 @@ function currentMultiplier(){
   const tier = getActiveTier();
   return tier ? tier.multiplier : settings.normalMultiplier;
 }
+function itemCost(it){ return Number(it.costPrice ?? it.price ?? 0) || 0; }
+function itemMrp(it){ return Number(it.mrp ?? it.price ?? it.costPrice ?? 0) || 0; }
 function livePrice(basePrice){
   const r = settings.rounding || 1;
   const p = basePrice * currentMultiplier();
@@ -3738,7 +3763,7 @@ function renderGrid(){
   }
   document.getElementById('emptyState').style.display='none';
   wrap.innerHTML = list.map(it=>{
-    const price = livePrice(it.price);
+    const price = livePrice(itemMrp(it));
     const inCart = cart[it.id]||0;
     const out = (it.qty||0) <= 0;
     const low = !out && it.qty<=3;
@@ -3777,7 +3802,7 @@ function cartSubtotal(){
   for (const id in cart){
     const it = items.find(i=>String(i.id)===String(id));
     if (!it) continue;
-    subtotal += livePrice(it.price) * cart[id];
+    subtotal += livePrice(itemMrp(it)) * cart[id];
     count += cart[id];
   }
   return {subtotal,count};
@@ -3840,7 +3865,7 @@ function getPromoEligibleLines(p){
     const it=items.find(i=>String(i.id)===String(id));
     if (!it) return null;
     if (p.scope==='category' && it.category!==p.category) return null;
-    return {id:String(id),it,qty:cart[id],unitPrice:livePrice(it.price)};
+    return {id:String(id),it,qty:cart[id],unitPrice:livePrice(itemMrp(it))};
   }).filter(Boolean);
 }
 
@@ -3997,7 +4022,7 @@ function renderCartDrawer(){
   else{
     qrow.style.display='block';
     document.getElementById('quickChips').innerHTML = quickItems.map(it=>{
-      const price = livePrice(it.price);
+      const price = livePrice(itemMrp(it));
       return `<div class="quick-chip" data-id="${it.id}">
         ${it.photo?`<img src="${it.photo}">`:`<span class="ph">${CAT_ICON[it.category]||'🍬'}</span>`}
         <div>
@@ -4018,7 +4043,7 @@ function renderCartDrawer(){
   list.innerHTML = ids.map(id=>{
     const it = items.find(i=>String(i.id)===String(id));
     if (!it) return "";
-    const price = livePrice(it.price);
+    const price = livePrice(itemMrp(it));
     const qty = cart[id];
     return `<div class="cart-row" data-id="${id}">
       ${it.photo?`<img class="ph" src="${it.photo}">`:`<div class="ph">${CAT_ICON[it.category]||'🍬'}</div>`}
@@ -4094,7 +4119,7 @@ async function confirmPaid(){
 
   const orderItems = Object.keys(cart).filter(id=>cart[id]>0).map(id=>{
     const it = items.find(i=>String(i.id)===String(id));
-    return { itemId: it.id, name: it.name, category:it.category, qty: cart[id], unitPrice: livePrice(it.price), unitCost: Number(it.price)||0 };
+    return { itemId: it.id, name: it.name, category:it.category, qty: cart[id], unitPrice: livePrice(itemMrp(it)), unitCost: itemCost(it) };
   });
 
   // Re-check stock before finalizing the order.
@@ -4462,14 +4487,15 @@ function renderStockList(){
       ${photo}
       <div class="info">
         <div class="nm">${escapeHtml(it.name)}</div>
-        <div class="meta">${it.category} · base ${money(it.price)} · sells ${money(livePrice(it.price))}</div>
+        <div class="meta">${it.category} · cost ${money(itemCost(it))} · MRP ${money(itemMrp(it))} · sells ${money(livePrice(itemMrp(it)))}</div>
       </div>
       <div class="qty-ctrl">
         <button class="qdec">−</button>
         <span class="n">${it.qty}</span>
         <button class="qinc">+</button>
       </div>
-      <button class="del">✕</button>
+      <button class="edit" title="Edit item" aria-label="Edit item">Edit</button>
+      <button class="del" title="Delete item" aria-label="Delete item">✕</button>
     </div>`;
   }).join('');
 }
@@ -4493,20 +4519,64 @@ async function deleteItemConfirm(id){
 
 async function handleAddItemSubmit(e){
   e.preventDefault();
+  const editId = document.getElementById('itemEditId').value.trim();
   const name = document.getElementById('newItemName').value.trim();
-  const price = parseFloat(document.getElementById('newItemPrice').value);
+  const costPrice = parseFloat(document.getElementById('newItemCost').value);
+  const mrp = parseFloat(document.getElementById('newItemMrp').value);
   const qty = parseInt(document.getElementById('newItemQty').value,10);
   const category = document.getElementById('newItemCat').value;
-  if (!name || isNaN(price) || price<=0 || isNaN(qty) || qty<0){
-    toast("Fill in name, price and quantity"); return;
+  if (!name || !Number.isFinite(costPrice) || costPrice<0 || !Number.isFinite(mrp) || mrp<0 || !Number.isFinite(qty) || qty<0){
+    toast("Fill in name, cost price, MRP and quantity"); return;
   }
-  await idbPut('items', { name, price, qty, category, photo: editingPhotoData||null, quickAdd:false });
-  editingPhotoData = null;
-  document.getElementById('addItemForm').reset();
-  document.getElementById('photoPreview').innerHTML = "📷";
+  if (mrp < costPrice){
+    if (!confirm("The MRP is lower than the cost price. Continue anyway?")) return;
+  }
+
+  if (editId){
+    const it = items.find(i=>String(i.id)===editId);
+    if (!it){ toast("Item not found"); return; }
+    it.name = name;
+    it.costPrice = costPrice;
+    it.mrp = mrp;
+    it.price = costPrice; // legacy compatibility
+    it.qty = qty;
+    it.category = category;
+    if (editingPhotoData !== null) it.photo = editingPhotoData;
+    await idbPut('items',it);
+    toast("Item updated ✓");
+  } else {
+    await idbPut('items', { name, costPrice, mrp, price:costPrice, qty, category, photo:editingPhotoData||null, quickAdd:false });
+    toast("Item added");
+  }
+  cancelItemEdit();
   await loadItems();
   renderStockList();
-  toast("Item added");
+  renderGrid();
+}
+
+function editItem(id){
+  const it = items.find(i=>String(i.id)===String(id));
+  if (!it) return;
+  document.getElementById('itemEditId').value = it.id;
+  document.getElementById('newItemName').value = it.name || '';
+  document.getElementById('newItemCat').value = it.category || CATEGORIES[0];
+  document.getElementById('newItemCost').value = itemCost(it);
+  document.getElementById('newItemMrp').value = itemMrp(it);
+  document.getElementById('newItemQty').value = Number(it.qty)||0;
+  editingPhotoData = null;
+  document.getElementById('photoPreview').innerHTML = it.photo ? `<img src="${it.photo}">` : '📷';
+  document.getElementById('itemSaveBtn').textContent = 'Save Changes';
+  document.getElementById('itemCancelEditBtn').style.display = 'block';
+  document.getElementById('addItemForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cancelItemEdit(){
+  document.getElementById('itemEditId').value = '';
+  document.getElementById('addItemForm').reset();
+  document.getElementById('photoPreview').innerHTML = '📷';
+  document.getElementById('itemSaveBtn').textContent = 'Add Item';
+  document.getElementById('itemCancelEditBtn').style.display = 'none';
+  editingPhotoData = null;
 }
 
 function renderQuickPickList(){
@@ -4838,7 +4908,7 @@ async function buildMarketingPoster(){
 
         ctx.fillStyle = '#E8491D';
         ctx.font = '800 29px Arial, sans-serif';
-        ctx.fillText(money(livePrice(it.price)),tx,rowY+116);
+        ctx.fillText(money(livePrice(itemMrp(it))),tx,rowY+116);
 
         // Small live stock indicator for the marketing poster.
         const stockText = it.qty === 1 ? '1 left' : `${it.qty} left`;
@@ -5134,10 +5204,12 @@ function bindEvents(){
     const id = row.dataset.id;
     if (e.target.classList.contains('qinc')) adjustStock(id,1);
     if (e.target.classList.contains('qdec')) adjustStock(id,-1);
+    if (e.target.classList.contains('edit')) editItem(id);
     if (e.target.classList.contains('del')) deleteItemConfirm(id);
   });
 
   document.getElementById('addItemForm').addEventListener('submit', handleAddItemSubmit);
+  document.getElementById('itemCancelEditBtn').addEventListener('click', cancelItemEdit);
   document.getElementById('photoInput').addEventListener('change', async e=>{
     const file = e.target.files[0]; if(!file) return;
     const dataUrl = await fileToResizedDataURL(file);
