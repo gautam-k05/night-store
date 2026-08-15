@@ -998,6 +998,36 @@ input,textarea,select{font-family:inherit;}
         </div>
       </div>
 
+      <!-- INVENTORY PANE -->
+      <div class="seller-pane" id="pane-inventory">
+        <div class="inventory-summary">
+          <div class="inventory-total-card">
+            <div class="inventory-total-value" id="inventoryTotalCost">₹0</div>
+            <div class="inventory-total-label">Current inventory cost</div>
+            <div class="inventory-total-sub" id="inventoryUnits">0 units in stock</div>
+          </div>
+          <div class="inventory-mini-card">
+            <div class="inventory-mini-value" id="inventoryRetailValue">₹0</div>
+            <div class="inventory-mini-label">Current selling value</div>
+          </div>
+          <div class="inventory-mini-card">
+            <div class="inventory-mini-value" id="inventoryProductCount">0</div>
+            <div class="inventory-mini-label">Products in stock</div>
+          </div>
+        </div>
+
+        <div class="form-card analytics-card">
+          <h4>Fastest-moving products</h4>
+          <p class="marketing-note">Ranked by recorded units sold per day, so you can see which products deserve more stock. Products with no sales history are not ranked.</p>
+          <div id="fastMovingList"></div>
+        </div>
+
+        <div class="form-card analytics-card">
+          <h4>Stock overview</h4>
+          <div id="inventoryStockList"></div>
+        </div>
+      </div>
+
       <!-- QUICK PICKS PANE -->
       <div class="seller-pane" id="pane-quick">
         <p class="qp-note">Pick up to 3 items to feature as one-tap "quick add" shortcuts in the customer's cart — great for your best sellers.</p>
@@ -1194,6 +1224,18 @@ input,textarea,select{font-family:inherit;}
           <div class="profit-box"><div class="v" id="statCost">₹0</div><div class="l">Cost</div></div>
           <div class="profit-box profit-main"><div class="v" id="statProfit">₹0</div><div class="l">Profit</div></div>
           <div class="profit-box"><div class="v" id="statCount">0</div><div class="l">Orders</div></div>
+        </div>
+        <div class="analytics-grid">
+          <div class="form-card chart-card">
+            <h4>Daily sales</h4>
+            <p class="chart-note">Revenue collected from completed orders.</p>
+            <div class="chart-wrap"><canvas id="salesChart" height="220"></canvas></div>
+          </div>
+          <div class="form-card chart-card">
+            <h4>Daily profit</h4>
+            <p class="chart-note">Selling revenue minus recorded product cost.</p>
+            <div class="chart-wrap"><canvas id="profitChart" height="220"></canvas></div>
+          </div>
         </div>
         <div class="section-lbl">Recent orders</div>
         <div id="ordersList"></div>
@@ -4247,6 +4289,7 @@ function switchSellerTab(tab){
   document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.seller-pane').forEach(p=>p.classList.toggle('active', p.id==='pane-'+tab));
   if (tab==='items') renderStockList();
+  if (tab==='inventory') renderInventoryPane();
   if (tab==='quick') renderQuickPickList();
   if (tab==='promos') renderPromoPane();
   if (tab==='orders') renderOrdersLog();
@@ -4579,6 +4622,83 @@ function cancelItemEdit(){
   editingPhotoData = null;
 }
 
+function formatDayKey(ts){
+  const d=new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function shortDayLabel(key){
+  const [y,m,d]=key.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+}
+function drawLineChart(canvasId, rows, valueKey, valuePrefix='₹'){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas) return;
+  const rect=canvas.getBoundingClientRect();
+  const w=Math.max(320,Math.floor(rect.width||canvas.parentElement.clientWidth||320));
+  const h=220, dpr=window.devicePixelRatio||1;
+  canvas.width=w*dpr; canvas.height=h*dpr;
+  const ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const pad={l:44,r:12,t:12,b:34};
+  const cw=w-pad.l-pad.r, ch=h-pad.t-pad.b;
+  const vals=rows.map(r=>Number(r[valueKey])||0);
+  const max=Math.max(...vals,1);
+  ctx.font='10px Arial';
+  ctx.strokeStyle='#e5e7eb'; ctx.fillStyle='#69717a'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch-(ch*i/4);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(w-pad.r,y); ctx.stroke();
+    const val=max*i/4;
+    ctx.fillText(valuePrefix+Math.round(val),4,y+3);
+  }
+  if(!rows.length){ ctx.fillStyle='#69717a'; ctx.fillText('No sales data yet',pad.l, pad.t+ch/2); return; }
+  const pts=rows.map((r,i)=>({x:pad.l+(rows.length===1?cw/2:(cw*i/(rows.length-1))),y:pad.t+ch-(Math.max(0,Number(r[valueKey])||0)/max)*ch}));
+  ctx.strokeStyle='#2f9e56'; ctx.lineWidth=2.5; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
+  ctx.fillStyle='#2f9e56'; pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fill();});
+  ctx.fillStyle='#69717a'; ctx.textAlign='center';
+  rows.forEach((r,i)=>{ if(rows.length<=7 || i%2===0 || i===rows.length-1) ctx.fillText(shortDayLabel(r.day),pts[i].x,h-10); });
+  ctx.textAlign='left';
+}
+async function getAllOrdersSorted(){
+  const orders=await idbAll('orders');
+  return orders.sort((a,b)=>a.timestamp-b.timestamp);
+}
+async function renderInventoryPane(){
+  const totalCost=items.reduce((s,it)=>s+itemCost(it)*(Number(it.qty)||0),0);
+  const totalSell=items.reduce((s,it)=>s+livePrice(itemMrp(it))*(Number(it.qty)||0),0);
+  const units=items.reduce((s,it)=>s+(Number(it.qty)||0),0);
+  document.getElementById('inventoryTotalCost').textContent=money(totalCost);
+  document.getElementById('inventoryRetailValue').textContent=money(totalSell);
+  document.getElementById('inventoryUnits').textContent=`${units} unit${units===1?'':'s'} in stock`;
+  document.getElementById('inventoryProductCount').textContent=items.filter(it=>(Number(it.qty)||0)>0).length;
+
+  const orders=await getAllOrdersSorted();
+  const stats={};
+  orders.forEach(o=>{
+    (o.items||[]).forEach(line=>{
+      const id=String(line.itemId); const qty=Number(line.qty)||0;
+      if(!stats[id]) stats[id]={name:line.name,qty:0,first:null,last:null};
+      stats[id].qty+=qty;
+      if(!stats[id].first || o.timestamp<stats[id].first) stats[id].first=o.timestamp;
+      if(!stats[id].last || o.timestamp>stats[id].last) stats[id].last=o.timestamp;
+    });
+  });
+  const now=Date.now();
+  const movers=Object.values(stats).map(x=>{
+    const days=Math.max(1,(now-x.first)/86400000);
+    return {...x,rate:x.qty/days};
+  }).filter(x=>x.qty>0).sort((a,b)=>b.rate-a.rate).slice(0,8);
+  const fast=document.getElementById('fastMovingList');
+  fast.innerHTML=movers.length ? movers.map((x,i)=>`<div class="fast-row"><div><div class="fast-name">${i+1}. ${escapeHtml(x.name)}</div><div class="fast-meta">${x.qty} units sold · first recorded sale ${new Date(x.first).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</div></div><div class="fast-rate">${x.rate.toFixed(1)}/day</div></div>`).join('') : '<p class="qp-note">No completed sales yet.</p>';
+
+  const stock=document.getElementById('inventoryStockList');
+  const maxQty=Math.max(1,...items.map(it=>Number(it.qty)||0));
+  stock.innerHTML=items.length ? [...items].sort((a,b)=>(Number(a.qty)||0)-(Number(b.qty)||0)).map(it=>{
+    const q=Number(it.qty)||0; const pct=Math.min(100,q/maxQty*100);
+    return `<div class="inventory-stock-row"><div class="inventory-stock-name">${escapeHtml(it.name)}<div class="inventory-stock-meta">${escapeHtml(it.category)} · cost ${money(itemCost(it))}</div></div><div class="inventory-stock-bar"><span style="width:${pct}%"></span></div><div class="inventory-stock-qty">${q}</div></div>`;
+  }).join('') : '<p class="qp-note">No inventory yet.</p>';
+}
+
 function renderQuickPickList(){
   const wrap = document.getElementById('quickPickList');
   const picked = items.filter(i=>i.quickAdd).length;
@@ -4642,6 +4762,20 @@ async function removeOrder(id){
   renderOrdersLog();
 }
 
+function renderDailyCharts(orders){
+  const days=[]; const today=new Date(); today.setHours(0,0,0,0);
+  const count=profitPeriod==='today' ? 14 : 30;
+  for(let i=count-1;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); days.push(formatDayKey(d.getTime())); }
+  const map={}; days.forEach(day=>map[day]={day,sales:0,profit:0});
+  orders.forEach(o=>{
+    const day=formatDayKey(o.timestamp); if(!map[day]) return;
+    map[day].sales+=Number(o.total)||0;
+    const p=orderStoredProfit(o); if(p!==null) map[day].profit+=p;
+  });
+  drawLineChart('salesChart',days.map(k=>map[k]),'sales','₹');
+  drawLineChart('profitChart',days.map(k=>map[k]),'profit','₹');
+}
+
 function renderOrdersLog(){
   idbAll('orders').then(orders=>{
     orders.sort((a,b)=>b.timestamp-a.timestamp);
@@ -4660,6 +4794,8 @@ function renderOrdersLog(){
     document.getElementById('statCount').textContent=periodOrders.length;
     document.getElementById('profitPeriodLabel').textContent=profitPeriod==='today' ? 'Today' : `Mon ${new Date(start).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} → Today`;
     updateProfitToggle();
+
+    renderDailyCharts(orders);
 
     const wrap=document.getElementById('ordersList');
     if(orders.length===0){ wrap.innerHTML=`<p class="qp-note">No orders logged yet.</p>`; return; }
@@ -5229,6 +5365,7 @@ function bindEvents(){
 
   document.getElementById('profitTodayBtn').addEventListener('click', ()=>{ profitPeriod='today'; renderOrdersLog(); });
   document.getElementById('profitWeekBtn').addEventListener('click', ()=>{ profitPeriod='week'; renderOrdersLog(); });
+  window.addEventListener('resize', ()=>{ if(sellerTab==='orders') renderOrdersLog(); });
   document.getElementById('ordersList').addEventListener('click', e=>{
     const btn=e.target.closest('.order-remove');
     if(!btn) return;
