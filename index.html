@@ -840,6 +840,67 @@ input,textarea,select{font-family:inherit;}
 }
 
 
+/* ================= INVENTORY DASHBOARD ================= */
+.inventory-hero{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#fff,#f6f8f5);border:1px solid var(--line);border-radius:22px;padding:20px 22px;margin-bottom:18px;box-shadow:0 6px 18px rgba(20,24,28,.04);}
+.inventory-hero-icon{width:54px;height:54px;border-radius:16px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.inventory-hero-title{font-size:21px;font-weight:850;color:var(--ink);letter-spacing:-.02em;}
+.inventory-hero-sub{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45;}
+.inventory-summary{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+.inventory-total-card,.inventory-mini-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;min-width:0;box-shadow:0 5px 16px rgba(20,24,28,.035);}
+.inventory-total-card{background:var(--ink);color:#fff;border-color:var(--ink);}
+.inventory-card-icon{font-size:22px;margin-bottom:14px;}
+.inventory-total-label,.inventory-mini-label{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+.inventory-total-card .inventory-total-label{color:#c7ccd1;}
+.inventory-total-value,.inventory-mini-value{font-family:var(--font-mono);font-size:28px;font-weight:850;line-height:1.1;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inventory-mini-value{font-size:24px;color:var(--ink);}
+.inventory-total-sub{font-size:12px;color:#b8bec4;margin-top:9px;}
+.inventory-section-head{display:flex;align-items:end;justify-content:space-between;margin:6px 2px 12px;}
+.inventory-section-head h3{margin:0;font-size:18px;color:var(--ink);letter-spacing:-.015em;}
+.inventory-section-head p{margin:4px 0 0;color:var(--muted);font-size:12.5px;}
+.inventory-fast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:26px;}
+.fast-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px 15px;min-width:0;}
+.fast-rank{width:34px;height:34px;border-radius:11px;background:var(--paper-dim);display:flex;align-items:center;justify-content:center;font-weight:850;color:var(--ink);flex-shrink:0;}
+.fast-main{min-width:0;flex:1;}
+.fast-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
+.fast-meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.fast-bar,.stock-level-line{height:6px;background:#edf0ec;border-radius:99px;overflow:hidden;margin-top:9px;}
+.fast-bar span,.stock-level-line span{display:block;height:100%;background:var(--leaf);border-radius:inherit;}
+.fast-rate{font-family:var(--font-mono);font-size:12px;color:var(--muted);text-align:right;white-space:nowrap;}
+.fast-rate strong{display:block;font-size:16px;color:var(--ink);}
+.fast-rate small{font-family:inherit;font-size:10px;}
+.inventory-stock-head{margin-top:2px;}
+.inventory-stock-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.inventory-stock-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 15px;min-width:0;}
+.inventory-stock-card.low-stock{border-color:#e8b4a7;background:#fffaf8;}
+.stock-card-top{display:flex;align-items:center;gap:11px;}
+.inventory-stock-photo{width:48px;height:48px;border-radius:12px;background:var(--paper-dim);object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.inventory-stock-info{min-width:0;flex:1;}
+.inventory-stock-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);}
+.inventory-stock-info span{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;}
+.inventory-stock-qty{text-align:right;font-family:var(--font-mono);flex-shrink:0;}
+.inventory-stock-qty strong{display:block;font-size:19px;color:var(--ink);line-height:1;}
+.inventory-stock-qty small{display:block;font-family:inherit;font-size:9px;color:var(--muted);margin-top:3px;text-transform:uppercase;}
+.stock-level-line{margin-top:13px;}
+.inventory-stock-card.low-stock .stock-level-line span{background:var(--spice);}
+.stock-card-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:9px;font-size:10.5px;color:var(--muted);}
+.inventory-stock-card.low-stock .stock-card-bottom span:last-child{color:var(--spice);font-weight:800;}
+.inventory-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fff;border:1px dashed var(--line);border-radius:18px;padding:30px 20px;color:var(--muted);}
+.inventory-empty-icon{font-size:30px;margin-bottom:8px;}
+.inventory-empty strong{font-size:15px;color:var(--ink);}
+.inventory-empty span{font-size:12px;margin-top:5px;max-width:330px;line-height:1.45;}
+@media(max-width:639px){
+  .inventory-summary{grid-template-columns:1fr 1fr;}
+  .inventory-total-card{grid-column:1/-1;}
+  .inventory-fast-grid,.inventory-stock-grid{grid-template-columns:1fr;}
+}
+@media(min-width:640px) and (max-width:999px){
+  .inventory-hero{padding:22px;}
+  .inventory-hero-title{font-size:23px;}
+  .inventory-total-value{font-size:32px;}
+  .inventory-mini-value{font-size:27px;}
+  .fast-card,.inventory-stock-card{padding:17px;}
+}
+
 /* ================= MARKETING POSTER ================= */
 .marketing-actions{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0 18px;}
 .marketing-actions .primary-btn,.marketing-actions .ghost-btn{margin:0;}
@@ -1036,32 +1097,48 @@ input,textarea,select{font-family:inherit;}
 
       <!-- INVENTORY PANE -->
       <div class="seller-pane" id="pane-inventory">
+        <div class="inventory-hero">
+          <div class="inventory-hero-icon">📦</div>
+          <div>
+            <div class="inventory-hero-title">Inventory at a glance</div>
+            <div class="inventory-hero-sub">See what your stock is worth and what you should restock next.</div>
+          </div>
+        </div>
+
         <div class="inventory-summary">
           <div class="inventory-total-card">
+            <div class="inventory-card-icon">💰</div>
+            <div class="inventory-total-label">Stock cost</div>
             <div class="inventory-total-value" id="inventoryTotalCost">₹0</div>
-            <div class="inventory-total-label">Current inventory cost</div>
             <div class="inventory-total-sub" id="inventoryUnits">0 units in stock</div>
           </div>
           <div class="inventory-mini-card">
+            <div class="inventory-card-icon">🏷️</div>
+            <div class="inventory-mini-label">Selling value</div>
             <div class="inventory-mini-value" id="inventoryRetailValue">₹0</div>
-            <div class="inventory-mini-label">Current selling value</div>
           </div>
           <div class="inventory-mini-card">
-            <div class="inventory-mini-value" id="inventoryProductCount">0</div>
+            <div class="inventory-card-icon">🛒</div>
             <div class="inventory-mini-label">Products in stock</div>
+            <div class="inventory-mini-value" id="inventoryProductCount">0</div>
           </div>
         </div>
 
-        <div class="form-card analytics-card">
-          <h4>Fastest-moving products</h4>
-          <p class="marketing-note">Ranked by recorded units sold per day, so you can see which products deserve more stock. Products with no sales history are not ranked.</p>
-          <div id="fastMovingList"></div>
+        <div class="inventory-section-head">
+          <div>
+            <h3>🔥 Sell fastest</h3>
+            <p>Products moving quickest — useful for restocking.</p>
+          </div>
         </div>
+        <div class="inventory-fast-grid" id="fastMovingList"></div>
 
-        <div class="form-card analytics-card">
-          <h4>Stock overview</h4>
-          <div id="inventoryStockList"></div>
+        <div class="inventory-section-head inventory-stock-head">
+          <div>
+            <h3>📦 Stock levels</h3>
+            <p>Your current quantity for every product.</p>
+          </div>
         </div>
+        <div class="inventory-stock-grid" id="inventoryStockList"></div>
       </div>
 
       <!-- QUICK PICKS PANE -->
@@ -4725,14 +4802,39 @@ async function renderInventoryPane(){
     return {...x,rate:x.qty/days};
   }).filter(x=>x.qty>0).sort((a,b)=>b.rate-a.rate).slice(0,8);
   const fast=document.getElementById('fastMovingList');
-  fast.innerHTML=movers.length ? movers.map((x,i)=>`<div class="fast-row"><div><div class="fast-name">${i+1}. ${escapeHtml(x.name)}</div><div class="fast-meta">${x.qty} units sold · first recorded sale ${new Date(x.first).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</div></div><div class="fast-rate">${x.rate.toFixed(1)}/day</div></div>`).join('') : '<p class="qp-note">No completed sales yet.</p>';
+  if (movers.length){
+    const maxRate=Math.max(...movers.map(x=>x.rate),1);
+    fast.innerHTML=movers.map((x,i)=>{
+      const pct=Math.max(8,Math.min(100,(x.rate/maxRate)*100));
+      return `<div class="fast-card">
+        <div class="fast-rank">${i+1}</div>
+        <div class="fast-main">
+          <div class="fast-name">${escapeHtml(x.name)}</div>
+          <div class="fast-meta">${x.qty} sold</div>
+          <div class="fast-bar"><span style="width:${pct}%"></span></div>
+        </div>
+        <div class="fast-rate"><strong>${x.rate.toFixed(1)}</strong><small>/day</small></div>
+      </div>`;
+    }).join('');
+  } else {
+    fast.innerHTML='<div class="inventory-empty"><div class="inventory-empty-icon">📊</div><strong>No sales yet</strong><span>Once products start selling, your fastest movers will appear here.</span></div>';
+  }
 
   const stock=document.getElementById('inventoryStockList');
   const maxQty=Math.max(1,...items.map(it=>Number(it.qty)||0));
   stock.innerHTML=items.length ? [...items].sort((a,b)=>(Number(a.qty)||0)-(Number(b.qty)||0)).map(it=>{
     const q=Number(it.qty)||0; const pct=Math.min(100,q/maxQty*100);
-    return `<div class="inventory-stock-row"><div class="inventory-stock-name">${escapeHtml(it.name)}<div class="inventory-stock-meta">${escapeHtml(it.category)} · cost ${money(itemCost(it))}</div></div><div class="inventory-stock-bar"><span style="width:${pct}%"></span></div><div class="inventory-stock-qty">${q}</div></div>`;
-  }).join('') : '<p class="qp-note">No inventory yet.</p>';
+    const low=q<=2;
+    return `<div class="inventory-stock-card ${low?'low-stock':''}">
+      <div class="stock-card-top">
+        ${it.photo?`<img src="${it.photo}" class="inventory-stock-photo">`:`<div class="inventory-stock-photo">${CAT_ICON[it.category]||'📦'}</div>`}
+        <div class="inventory-stock-info"><strong>${escapeHtml(it.name)}</strong><span>${escapeHtml(it.category)}</span></div>
+        <div class="inventory-stock-qty"><strong>${q}</strong><small>left</small></div>
+      </div>
+      <div class="stock-level-line"><span style="width:${pct}%"></span></div>
+      <div class="stock-card-bottom"><span>Cost ${money(itemCost(it))}</span><span>${low && q>0 ? 'Low stock' : q===0 ? 'Sold out' : 'In stock'}</span></div>
+    </div>`;
+  }).join('') : '<div class="inventory-empty"><div class="inventory-empty-icon">📦</div><strong>No inventory yet</strong><span>Add products from the Items tab to see stock here.</span></div>';
 }
 
 function renderQuickPickList(){

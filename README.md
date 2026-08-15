@@ -1,102 +1,499 @@
 # 🍪 Hostel Store
 
-A tiny point-of-sale web app for reselling snacks out of a hostel room. One HTML file, no server, no database, no internet required once loaded — built to run continuously on a single tablet that customers use to browse, add to cart, and pay you via UPI.
+A tablet-first, single-device point-of-sale web app for selling snacks and other products from a hostel room or small kiosk. Customers browse products, build a cart, apply promotional discounts, and pay via a pre-filled UPI QR code. The seller manages inventory, pricing, promotions, orders, profit, and inventory analytics from a PIN-protected dashboard.
 
-**Live demo:** add your GitHub Pages link here once deployed, e.g. `https://yourusername.github.io/hostel-store/`
+The entire application is contained in a single `index.html` file and stores its data locally in the browser using IndexedDB.
+
+> **Important:** This is intentionally a single-device kiosk. There is no shared backend and no synchronization between devices.
 
 ---
 
 ## What it does
 
-### Customer side
-- Blinkit/Zepto-style grid of items — photo, name, live price
-- Tap **+** to add an item, then a **+ / −** stepper to adjust quantity
-- Category filter chips: Snacks, Biscuits, Drinks, Sweets, Instant Food, Other
-- Cart drawer with running total and 2–3 seller-picked **quick add** items for one-tap repeat orders
-- Checkout generates a **UPI QR code with the amount pre-filled** — the customer just scans and pays, no typing
-- Stock automatically goes out of stock / greys out when quantity hits 0
+### 🛒 Customer side
 
-### Seller side (PIN-protected)
-- **Items** — add a photo, name, category, cost price, and starting stock; adjust stock up/down anytime with a tap; delete items
-- **Quick Picks** — mark up to 3 items as one-tap shortcuts shown in the customer's cart
-- **Pricing & UPI** — set your UPI ID, payee name, shop name, and seller PIN
-- **Dynamic pricing tiers** — add as many time-based pricing windows as you want (e.g. "Night Market" 8–11pm ×1.5, "Late Night Market" 11pm–3am ×1.7), each with its own multiplier on top of your standard multiplier. Handles windows that cross midnight.
-- **Orders log** — every completed order with timestamp, items, and total, plus a "today's sales" summary, so you can reconcile against your bank SMS
-
-### Under the hood
-- Single `index.html` file — HTML, CSS, and JS all inline, nothing to install or build
-- Data (items, photos, orders, settings) is stored in the browser's **IndexedDB** — fully local to the device, no backend, no account
-- QR codes are generated **entirely client-side** (a small embedded QR library) — works with zero internet connection
-- Requests a **screen wake lock** so the tablet doesn't sleep while running as a kiosk
-- Photos are auto-resized and compressed on upload to keep storage light
+- Tablet-friendly, touch-oriented product grid with large product cards and readable text.
+- Product photos, names, categories, live selling prices, and stock availability.
+- Categories:
+  - Snacks
+  - Biscuits
+  - Drinks
+  - Sweets
+  - Instant Food
+  - Other
+- Tap **+** to add products and use the **+ / −** stepper to change quantities.
+- Large cart drawer designed for tablet screens.
+- Seller-selected **Quick Picks** for one-tap repeat/add-on purchases.
+- Cart shows:
+  - Item quantities
+  - Current selling price
+  - Subtotal
+  - Promotional discount
+  - Final total
+- Customer-facing **live promo section**:
+  - Shows currently active promo codes.
+  - Customers can tap/use a displayed promo or enter a code manually.
+  - Only one promo code can be used per order.
+  - Shows how much the promotion saves and, for category promotions, which category is affected.
+- Checkout generates a **large UPI QR code** with the final amount pre-filled.
+- Checkout also shows the subtotal and promotional savings before payment.
+- Stock automatically becomes unavailable when quantity reaches zero.
 
 ---
 
-## ⚠️ Important: the database is local to each device
+## 🏪 Seller dashboard
 
-There is no shared backend. Every device that opens this link gets its **own separate, empty copy** of the app — items, stock, and orders do **not** sync between devices. This is meant to run on **one single device** (your tablet) that acts as the till. If two different devices both add inventory, you'll end up with two out-of-sync stores.
+The seller dashboard is PIN-protected and contains:
+
+### Items
+
+Add and manage inventory listings with:
+
+- Product photo
+- Product name
+- Category
+- **Cost price** — what the seller actually paid
+- **MRP** — the price on which the pricing multiplier is applied
+- Quantity in stock
+
+Existing listings can be **edited** at any time, including their photo, name, category, cost price, MRP, and quantity.
+
+Stock can also be increased or decreased directly from the item list.
+
+### Pricing model
+
+The app deliberately separates cost price from MRP:
+
+```text
+MRP × active pricing multiplier = customer selling price
+```
+
+Profit is calculated as:
+
+```text
+Selling price − cost price = profit
+```
+
+For example:
+
+```text
+Cost price = ₹15
+MRP = ₹20
+Multiplier = 1.25×
+
+Selling price = ₹25
+Profit = ₹25 − ₹15 = ₹10
+```
+
+The multiplier therefore does **not** operate on cost price.
+
+### Quick Picks
+
+- Mark up to 3 products as seller-selected Quick Picks.
+- Quick Picks appear in the customer's cart for easy add-on purchases.
+
+### Promos
+
+Create and manage customer-facing promotional codes.
+
+Supported promotion types:
+
+1. **Percentage discount**
+   - Example: `IND` → 15% off
+2. **Flat discount**
+   - Example: `HOSTEL20` → ₹20 off
+3. **Buy X Get Y**
+   - Example: `BUY3GET1` → Buy 3, Get 1 Free
+
+Promotions can apply to:
+
+- **Entire cart**
+- **One specific category**
+
+Additional controls:
+
+- Minimum cart value
+- Inclusive start and end dates
+- Usage limit or unlimited usage
+- Current usage count
+- Enabled/disabled status
+- Edit, disable, or delete promotions
+- Only one promo can be applied to an order
+
+### Buy X Get Y rules
+
+For Buy X Get Y promotions:
+
+- Every complete qualifying group receives the promotion.
+- The cheapest qualifying item(s) are free.
+- Category-specific Buy X Get Y promotions only consider products from the selected category.
+
+### Promo usage
+
+A promo usage is counted only after a customer completes the payment flow and the order is recorded. Merely entering or applying a code does not consume a use.
+
+### Promo testing
+
+The Promos tab includes a **Create TEST15 test promo** button.
+
+It creates a temporary:
+
+- `TEST15`
+- 15% off the entire cart
+- ₹0 minimum cart value
+- 20 uses
+- Valid today through the next 7 days
+- Enabled immediately
+
+This is useful for testing the complete customer checkout and order-recording flow without manually creating a promotion.
+
+### Live promo poster
+
+The Promos tab has a separate marketing-poster generator for promotions.
+
+It can:
+
+- Download a PNG
+- Share the PNG
+- Print / save as PDF
+
+The poster includes only promotions that are **live right now** and shows important details such as:
+
+- Promo code
+- Discount type and value
+- Whether it applies to the whole cart or a category
+- Minimum cart value
+- Validity dates
+- Usage limit / remaining uses
+
+This is separate from the product/inventory marketing poster.
+
+### Pricing & UPI
+
+Configure:
+
+- Shop name
+- UPI ID
+- Payee name
+- Marketing footer text
+- Standard pricing multiplier
+- Price rounding
+- Time-based pricing tiers
+- Seller PIN
+
+The marketing footer is used by the product marketing PNG, allowing text such as:
+
+```text
+Room 214 · DM to order
+```
+
+### Dynamic pricing tiers
+
+Add as many time-based pricing windows as needed.
+
+Example:
+
+```text
+Standard pricing      ×1.25
+Night Market 8–11 PM ×1.50
+Late Night 11 PM–3 AM ×1.70
+```
+
+Pricing windows can cross midnight.
+
+If multiple tiers overlap, the lower tier in the list wins.
 
 ---
 
-## Getting started
+## 📦 Inventory analytics
 
-1. Open the app on the tablet you'll actually use as the till.
-2. Tap the small **⚙︎** gear icon in the bottom-left corner.
-3. Enter the default seller PIN: **`1234`**
-4. Go to **Pricing & UPI** and set, at minimum:
-   - Your **UPI ID** (e.g. `yourname@upi`)
-   - **Payee name** (shown to the customer before they pay)
-   - **Shop name**
-   - A new **seller PIN** (change this from the default!)
-5. Adjust the standard multiplier and pricing tiers if you don't want the defaults (see below).
-6. Go to **Items** and add your snacks — photo, name, category, cost price, and quantity in stock.
-7. (Optional) Go to **Quick Picks** and mark your 2–3 best sellers.
-8. Tap the back arrow to return to the customer view — you're live.
+The Seller → **Inventory** tab provides a visual inventory dashboard.
 
-### Default settings out of the box
+It shows:
+
+- **Current inventory cost**
+  - Sum of `cost price × current stock`
+- **Current selling value**
+  - Value of remaining inventory at the current live selling price
+- **Total units in stock**
+- **Number of products currently in stock**
+
+### Fastest-moving products
+
+The Inventory tab analyzes completed orders and ranks products by how quickly they are selling.
+
+This helps identify products that should be restocked more aggressively.
+
+### Stock levels
+
+A visual stock overview shows:
+
+- Product photo
+- Product name
+- Category
+- Current quantity
+- Cost price
+- Stock-level indicator
+- Low-stock / in-stock / sold-out status
+
+---
+
+## 📊 Sales, profit & orders
+
+The Seller → **Orders** tab provides both order history and financial analytics.
+
+### Period summary
+
+Toggle between:
+
+- **Today**
+- **This week**
+
+The dashboard shows:
+
+- **Sales** — actual recorded customer revenue after applicable discounts
+- **Cost** — cost of the products sold
+- **Profit** — sales minus cost
+- **Orders** — number of completed orders
+
+### Charts
+
+The Orders tab includes:
+
+- **Daily Sales** chart
+- **Daily Profit** chart
+
+The charts are constrained to the available screen width and stack vertically on smaller/tablet displays so they do not overflow the screen.
+
+### Individual orders
+
+Each order shows:
+
+- Date and time
+- Items and quantities
+- Final sales amount
+- Cost
+- Profit
+- Promo code and promotional saving, when applicable
+
+### Removing test orders
+
+Every order has a **× Remove** control.
+
+Removing an order deletes it from the local sales history and causes the sales, cost, profit, order count, and charts to recalculate.
+
+This is intended primarily for removing test transactions.
+
+> Removing an order does not automatically restore a promotional usage. Promo usage is treated separately from sales-history cleanup.
+
+---
+
+## 📣 Product marketing poster
+
+The Items tab contains a product marketing-poster generator.
+
+It can:
+
+- Download a PNG
+- Share the PNG
+- Print / save as PDF
+
+The product poster:
+
+- Includes all categories that currently contain in-stock products.
+- Uses the real uploaded product photos.
+- Uses the current live selling prices.
+- Automatically skips out-of-stock products.
+- Shows a small remaining-stock indicator.
+- Uses the configured marketing footer.
+- Adds pricing-tier urgency information when applicable.
+
+Example footer behavior:
+
+```text
+Prices rise to ×1.5 at 8 PM
+```
+
+If there are multiple pricing tiers, the poster adapts the message automatically.
+
+---
+
+## 💾 Under the hood
+
+- Single `index.html` file.
+- HTML, CSS, and JavaScript are inline.
+- No build system or installation is required.
+- Data is stored locally in the browser's **IndexedDB**.
+- Separate local data includes:
+  - Items
+  - Product photos
+  - Orders
+  - Settings
+  - Promotions
+- QR codes are generated client-side using the embedded QR library.
+- Product photos are resized/compressed when uploaded to reduce storage usage.
+- The app requests a screen wake lock so the kiosk tablet can remain awake where supported.
+
+---
+
+## ⚠️ Important: local database / single-device architecture
+
+There is **no shared backend**.
+
+Every browser/device that opens the application has its own local database.
+
+Therefore:
+
+- Inventory does not sync between devices.
+- Orders do not sync between devices.
+- Promotions do not sync between devices.
+- Settings do not sync between devices.
+
+The intended setup is:
+
+```text
+One tablet
+    ↓
+Hostel Store kiosk
+    ↓
+Customers browse → order → pay
+    ↓
+Seller manages everything on the same tablet
+```
+
+If multiple devices need to share the same inventory and orders, the application would need a real backend/database architecture.
+
+---
+
+## 🚀 Getting started
+
+1. Open `index.html` on the tablet that will act as the kiosk.
+2. Tap the **⚙︎** seller/settings button.
+3. Enter the seller PIN.
+4. Go to **Pricing & UPI** and configure:
+   - UPI ID
+   - Payee name
+   - Shop name
+   - Seller PIN
+5. Go to **Items** and add products:
+   - Photo
+   - Name
+   - Category
+   - Cost price
+   - MRP
+   - Quantity
+6. Optionally configure:
+   - Quick Picks
+   - Pricing tiers
+   - Promo codes
+   - Marketing footer
+7. Use **Inventory** to monitor stock and fast-moving products.
+8. Use **Orders** to monitor sales, profit, and daily trends.
+9. Return to the customer view.
+
+### Default settings
 
 | Setting | Default |
 |---|---|
 | Seller PIN | `1234` |
-| Standard multiplier | 1.25× |
-| Night Market tier | 8:00 PM – 11:00 PM, ×1.5 |
-| Late Night Market tier | 11:00 PM – 3:00 AM, ×1.7 |
-| Price rounding | nearest ₹1 |
-| UPI ID | *(empty — must be set before checkout will work)* |
+| Standard multiplier | `1.25×` |
+| Night Market | `8:00 PM – 11:00 PM, ×1.5` |
+| Late Night Market | `11:00 PM – 3:00 AM, ×1.7` |
+| Price rounding | Nearest ₹1 |
+| UPI ID | Empty — must be configured |
 
-> Base price = your cost price. The multiplier is your markup — whatever tier is active for the current time gets used automatically, with the standard multiplier as the fallback when no tier is active. You can add, edit, or remove tiers freely; if two tiers' time windows overlap, the one lower in the list wins.
-
----
-
-## How pricing tiers work
-
-- Every item has one **base price** — what you paid for it.
-- At checkout, the customer sees `base price × current multiplier`, rounded to your chosen rounding.
-- The active multiplier is whichever pricing tier's time window matches right now; if none match, the standard multiplier applies.
-- Tiers can wrap past midnight (e.g. 11:00 PM → 3:00 AM works correctly).
+**Change the default seller PIN before using the app for real sales.**
 
 ---
 
-## Deployment (GitHub Pages)
+## 💰 How pricing and profit work
 
-1. Create a **public** repository (GitHub Pages on the free plan requires public repos).
-2. Upload `index.html` (rename it to `index.html` if it isn't already, so it loads at the root URL).
-3. Go to **Settings → Pages**, set Source to your main branch, folder `/(root)`.
-4. Your live link will appear at `https://yourusername.github.io/reponame/`.
-5. Open that link on the tablet, then use the browser's **"Add to Home Screen"** option for a full-screen, app-like experience.
+The app maintains two separate prices for each product:
 
-Since the compiled page's source is publicly viewable once deployed (this is how all GitHub Pages sites work), **make sure you've changed the seller PIN** in-app before relying on it — don't leave it at `1234`.
+| Value | Meaning |
+|---|---|
+| Cost price | What the seller paid for the product |
+| MRP | Reference price used by the pricing multiplier |
+
+The customer price is:
+
+```text
+MRP × active multiplier
+```
+
+The profit is:
+
+```text
+customer selling price − cost price
+```
+
+Promotional discounts are applied **after** the current live selling price has been calculated.
+
+For example:
+
+```text
+Cost price = ₹15
+MRP = ₹20
+Multiplier = ×1.5
+
+Live selling price = ₹30
+
+15% promo discount = ₹4.50
+
+Customer pays = ₹25.50
+
+Profit = ₹25.50 − ₹15
+       = ₹10.50
+```
+
+Historical orders store their financial information so later changes to an item's current cost/MRP do not change the stored economics of a completed sale.
 
 ---
 
-## Notes & limitations
+## 💳 Payment flow
 
-- No payment confirmation system — you manually confirm payment against your bank app/SMS. Tapping "I've Paid — Done" simply logs the order and deducts stock; it doesn't verify anything.
-- Clearing browser data/cache on the tablet will wipe the local database. Don't clear site data for this page.
-- Built for one device. See the section above if you're thinking about multiple sellers/devices — that needs a different architecture with a real backend.
+The app does not automatically verify UPI payments.
+
+The customer:
+
+1. Opens checkout.
+2. Scans the generated UPI QR.
+3. Pays the displayed amount.
+4. Seller/customer confirms payment.
+5. **I've Paid — Done** records the order and deducts stock.
+
+The QR contains the final payable amount, including applicable promotional discounts.
 
 ---
 
-## License
+## ⚠️ Notes & limitations
 
-The embedded QR code generator is [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) by Kazuhiko Arase, MIT licensed. Everything else is free to use, modify, and redeploy for your own hostel/dorm/office snack stand.
+- Payment is **not automatically verified**. The seller must verify the payment independently.
+- Clearing browser/site data can erase the local IndexedDB data.
+- Keep regular backups if the inventory/order history is important.
+- The seller PIN protects the seller dashboard UI, but this is still a client-side web application.
+- GitHub Pages and similar static hosting expose the page source to users. Do not treat the client-side PIN as a secure server-side authentication mechanism.
+- The application is designed for one kiosk device.
+- Historical profit requires stored cost information. Older orders created before cost-price tracking may not have complete historical cost data.
+- Removing an order is an administrative/testing cleanup operation and should not be used as a substitute for proper accounting records.
+
+---
+
+## 🌐 Deployment with GitHub Pages
+
+1. Create a repository.
+2. Upload `index.html`.
+3. Go to **Settings → Pages**.
+4. Set the source to the main branch and `/(root)`.
+5. Open the generated GitHub Pages URL on the kiosk tablet.
+6. Use the browser's **Add to Home Screen** option for a more app-like experience.
+
+Because this is a local-first application, the tablet's browser storage is the actual data store.
+
+---
+
+## 📜 License
+
+The embedded QR code generator is based on **qrcode-generator** by Kazuhiko Arase and is MIT licensed.
+
+Everything else is free to use, modify, and redeploy for a hostel, dorm, office snack stand, or similar small self-service kiosk.
