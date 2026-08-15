@@ -563,6 +563,41 @@ input,textarea,select{font-family:inherit;}
 .seller-pane{display:none;}
 .seller-pane.active{display:block;}
 
+/* Analytics charts: always stay inside the seller dashboard viewport. */
+.analytics-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:14px;
+  width:100%;
+  max-width:100%;
+}
+.chart-card{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+}
+.chart-wrap{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  overflow:hidden;
+  position:relative;
+}
+.chart-wrap canvas{
+  display:block;
+  width:100% !important;
+  max-width:100%;
+  height:220px !important;
+}
+.chart-note{
+  font-size:12px;
+  color:var(--muted);
+  margin:-5px 0 10px;
+  line-height:1.4;
+}
+
+
 .form-card{
   background:#fff;border:1px solid var(--line);border-radius:14px;
   padding:16px;margin-bottom:16px;
@@ -935,6 +970,7 @@ input,textarea,select{font-family:inherit;}
     </div>
     <div class="seller-tabs">
       <button class="stab active" data-tab="items">Items</button>
+      <button class="stab" data-tab="inventory">Inventory</button>
       <button class="stab" data-tab="quick">Quick Picks</button>
       <button class="stab" data-tab="promos">Promos</button>
       <button class="stab" data-tab="pricing">Pricing &amp; UPI</button>
@@ -4634,7 +4670,7 @@ function drawLineChart(canvasId, rows, valueKey, valuePrefix='₹'){
   const canvas=document.getElementById(canvasId);
   if(!canvas) return;
   const rect=canvas.getBoundingClientRect();
-  const w=Math.max(320,Math.floor(rect.width||canvas.parentElement.clientWidth||320));
+  const w=Math.max(240,Math.floor(rect.width||canvas.parentElement.clientWidth||240));
   const h=220, dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr; canvas.height=h*dpr;
   const ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
