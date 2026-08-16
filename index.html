@@ -498,6 +498,29 @@ input,textarea,select{font-family:inherit;}
   padding:8px;font-size:13px;font-weight:700;cursor:pointer;
 }
 
+.payment-method-card,.order-edit-card{width:min(92vw,460px);background:#fff;border-radius:22px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.22);}
+.payment-method-card h3,.order-edit-card h3{margin:0 0 8px;font-family:var(--font-display);font-size:24px;text-transform:uppercase;}
+.payment-method-card .method-sub,.order-edit-card .method-sub{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:18px;}
+.payment-method-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.payment-method-btn{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:18px 12px;cursor:pointer;text-align:center;font-weight:900;font-size:16px;color:var(--ink);}
+.payment-method-btn .icon{font-size:28px;display:block;margin-bottom:7px;}
+.payment-method-btn:active{transform:scale(.98);background:var(--paper-dim);}
+.payment-method-cancel{margin-top:12px;}
+.order-edit-options{display:grid;gap:10px;margin:16px 0;}
+.order-edit-option{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;font-weight:800;}
+.order-edit-option input{width:20px;height:20px;accent-color:var(--ink);}
+.order-payment-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900;margin-left:7px;}
+.order-payment-badge.cash{background:#eaf7ed;color:#247a3d;}
+.order-payment-badge.online{background:#e9f1ff;color:#245ca8;}
+.order-payment-badge.unknown{background:#f1f1f1;color:#6b7075;}
+.payment-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:-4px 0 18px;}
+.payment-breakdown .pay-box{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 13px;}
+.payment-breakdown .pay-box .v{font-family:var(--font-mono);font-size:16px;font-weight:900;}
+.payment-breakdown .pay-box .l{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800;margin-top:2px;}
+.order-edit-payment{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--ink-soft);font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.order-edit-payment:hover{background:var(--paper-dim);}
+@media(max-width:520px){.payment-method-options{grid-template-columns:1fr;}}
+
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
   background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;
@@ -991,7 +1014,20 @@ input,textarea,select{font-family:inherit;}
         <span class="lbl">Total</span>
         <span class="val" id="cartTotalVal">₹0</span>
       </div>
-      <button class="checkout-btn" id="checkoutBtn" disabled>Checkout</button>
+      <button class="checkout-btn" id="checkoutBtn" disabled>Place Order</button>
+    </div>
+  </div>
+
+  <!-- ============ PAYMENT METHOD MODAL ============ -->
+  <div class="modal-bg" id="paymentMethodModal">
+    <div class="payment-method-card">
+      <h3>Choose payment</h3>
+      <div class="method-sub" id="paymentMethodAmount">Total: ₹0</div>
+      <div class="payment-method-options">
+        <button type="button" class="payment-method-btn" id="cashPaymentBtn"><span class="icon">💵</span>Cash</button>
+        <button type="button" class="payment-method-btn" id="onlinePaymentBtn"><span class="icon">📱</span>Online / UPI</button>
+      </div>
+      <button type="button" class="cancel-btn payment-method-cancel" id="cancelPaymentMethodBtn">Cancel</button>
     </div>
   </div>
 
@@ -1005,6 +1041,32 @@ input,textarea,select{font-family:inherit;}
       <div class="qr-hint">Scan with any UPI app to pay. The amount is pre-filled — no need to type anything.</div>
       <button class="paid-btn" id="paidBtn">I've Paid — Done</button>
       <button class="cancel-btn" id="cancelCheckoutBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ============ CASH CONFIRMATION MODAL ============ -->
+  <div class="modal-bg" id="cashModal">
+    <div class="qr-card">
+      <div class="amount" id="cashAmount">₹0</div>
+      <div class="qr-summary" id="cashSummary"></div>
+      <div class="to">Payment method: Cash</div>
+      <div class="qr-hint">Collect the cash from the customer, then confirm the payment below.</div>
+      <button class="paid-btn" id="cashPaidBtn">Cash Received — Done</button>
+      <button class="cancel-btn" id="cancelCashBtn">Back</button>
+    </div>
+  </div>
+
+  <!-- ============ ORDER PAYMENT EDIT MODAL ============ -->
+  <div class="modal-bg" id="orderEditModal">
+    <div class="order-edit-card">
+      <h3>Edit payment</h3>
+      <div class="method-sub" id="orderEditSummary">Choose how this order was paid.</div>
+      <div class="order-edit-options">
+        <label class="order-edit-option"><input type="radio" name="editPaymentMethod" value="cash"> 💵 Cash</label>
+        <label class="order-edit-option"><input type="radio" name="editPaymentMethod" value="online"> 📱 Online / UPI</label>
+      </div>
+      <button type="button" class="primary-btn" id="saveOrderPaymentBtn" style="width:100%">Save payment method</button>
+      <button type="button" class="cancel-btn" id="cancelOrderEditBtn">Cancel</button>
     </div>
   </div>
 
@@ -1337,6 +1399,10 @@ input,textarea,select{font-family:inherit;}
           <div class="profit-box"><div class="v" id="statCost">₹0</div><div class="l">Cost</div></div>
           <div class="profit-box profit-main"><div class="v" id="statProfit">₹0</div><div class="l">Profit</div></div>
           <div class="profit-box"><div class="v" id="statCount">0</div><div class="l">Orders</div></div>
+        </div>
+        <div class="payment-breakdown">
+          <div class="pay-box"><div class="v" id="statCashSales">₹0</div><div class="l">Cash revenue</div></div>
+          <div class="pay-box"><div class="v" id="statOnlineSales">₹0</div><div class="l">Online revenue</div></div>
         </div>
         <div class="analytics-grid">
           <div class="form-card chart-card">
@@ -3747,6 +3813,8 @@ let currentCategory = "All";
 let sellerAuthed = false;
 let pinBuffer = "";
 let pendingPinAction = null;
+let currentPaymentMethod = null;
+let editingOrderId = null;
 
 /* ---------------- boot ---------------- */
 (async function init(){
@@ -4240,26 +4308,30 @@ function buildUpiUri(amount){
 function openCheckout(){
   const pricing=cartPricing();
   if (pricing.count===0) return;
-  if (pricing.promoError && appliedPromoCode){
-    toast(pricing.promoError);
-    renderCartDrawer();
-    return;
+  if (pricing.promoError && appliedPromoCode){ toast(pricing.promoError); renderCartDrawer(); return; }
+  document.getElementById('paymentMethodAmount').textContent = `Total: ${money(pricing.total)}`;
+  document.getElementById('paymentMethodModal').classList.add('show');
+}
+function closePaymentMethodModal(){ document.getElementById('paymentMethodModal').classList.remove('show'); }
+function selectPaymentMethod(method){
+  const pricing=cartPricing();
+  if(pricing.count===0) return;
+  currentPaymentMethod=method;
+  closePaymentMethodModal();
+  if(method==='online'){
+    if(!settings.upiId){ currentPaymentMethod=null; toast("Seller hasn't set a UPI ID yet"); return; }
+    document.getElementById('qrAmount').textContent=money(pricing.total);
+    document.getElementById('qrSummary').innerHTML=pricing.discount>0 ? `Subtotal ${money(pricing.subtotal)} · <strong>${escapeHtml(pricing.promo.code)} saved ${money(pricing.discount)}</strong>` : `Subtotal ${money(pricing.subtotal)}`;
+    document.getElementById('qrTo').textContent="to "+(settings.payeeName||settings.shopName)+" · "+settings.upiId;
+    const uri=buildUpiUri(pricing.total); const qr=qrcode(0,'M'); qr.addData(uri); qr.make();
+    document.getElementById('qrBox').innerHTML=qr.createSvgTag({cellSize:8,margin:2});
+    document.getElementById('paidBtn').textContent="I've Paid — Done";
+    document.getElementById('checkoutModal').classList.add('show');
+  } else {
+    document.getElementById('cashAmount').textContent=money(pricing.total);
+    document.getElementById('cashSummary').innerHTML=pricing.discount>0 ? `Subtotal ${money(pricing.subtotal)} · <strong>${escapeHtml(pricing.promo.code)} saved ${money(pricing.discount)}</strong>` : `No promotional discount applied`;
+    document.getElementById('cashModal').classList.add('show');
   }
-  if (!settings.upiId){
-    toast("Seller hasn't set a UPI ID yet");
-    return;
-  }
-  document.getElementById('qrAmount').textContent = money(pricing.total);
-  document.getElementById('qrSummary').innerHTML = pricing.discount>0
-    ? `Subtotal ${money(pricing.subtotal)} · <strong>${escapeHtml(pricing.promo.code)} saved ${money(pricing.discount)}</strong>`
-    : `Subtotal ${money(pricing.subtotal)}`;
-  document.getElementById('qrTo').textContent = "to " + (settings.payeeName || settings.shopName) + " · " + settings.upiId;
-  const uri = buildUpiUri(pricing.total);
-  const qr = qrcode(0, 'M');
-  qr.addData(uri);
-  qr.make();
-  document.getElementById('qrBox').innerHTML = qr.createSvgTag({cellSize:8, margin:2});
-  document.getElementById('checkoutModal').classList.add('show');
 }
 
 async function confirmPaid(){
@@ -4333,12 +4405,15 @@ async function confirmPaid(){
     total: pricing.total,
     cost: orderCost,
     profit: orderProfit,
-    promo: promoRecord
+    promo: promoRecord,
+    paymentMethod: currentPaymentMethod || 'online'
   });
 
   cart = {};
   appliedPromoCode="";
+  currentPaymentMethod=null;
   document.getElementById('checkoutModal').classList.remove('show');
+  document.getElementById('cashModal').classList.remove('show');
   closeDrawer();
   renderGrid();
   renderCartDrawer();
@@ -4900,6 +4975,23 @@ async function removeOrder(id){
   renderOrdersLog();
 }
 
+async function editOrderPayment(id){
+  const orderId=Number(id); if(!Number.isFinite(orderId)) return;
+  const order=await idbGet('orders',orderId); if(!order) return;
+  editingOrderId=orderId;
+  document.getElementById('orderEditSummary').textContent=`Order ${new Date(order.timestamp).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})} · ${money(order.total||0)}`;
+  document.querySelectorAll('input[name="editPaymentMethod"]').forEach(r=>r.checked=r.value===(order.paymentMethod||''));
+  document.getElementById('orderEditModal').classList.add('show');
+}
+async function saveOrderPayment(){
+  if(editingOrderId===null) return;
+  const selected=document.querySelector('input[name="editPaymentMethod"]:checked');
+  if(!selected){ toast('Choose a payment method'); return; }
+  const order=await idbGet('orders',editingOrderId); if(!order) return;
+  order.paymentMethod=selected.value; await idbPut('orders',order);
+  editingOrderId=null; document.getElementById('orderEditModal').classList.remove('show');
+  toast('Payment method updated'); renderOrdersLog();
+}
 function renderDailyCharts(orders){
   const days=[]; const today=new Date(); today.setHours(0,0,0,0);
   const count=profitPeriod==='today' ? 14 : 30;
@@ -4922,6 +5014,8 @@ function renderOrdersLog(){
     const start = profitPeriod==='today' ? today.getTime() : getWeekStartTimestamp();
     const periodOrders = orders.filter(o=>o.timestamp>=start && o.timestamp<=now);
     const sales = periodOrders.reduce((s,o)=>s+Number(o.total||0),0);
+    const cashSales = periodOrders.filter(o=>o.paymentMethod==='cash').reduce((s,o)=>s+Number(o.total||0),0);
+    const onlineSales = periodOrders.filter(o=>o.paymentMethod==='online').reduce((s,o)=>s+Number(o.total||0),0);
     const costValues = periodOrders.map(orderStoredCost);
     const knownCost = costValues.filter(v=>v!==null).reduce((s,v)=>s+v,0);
     const profitValues = periodOrders.map(orderStoredProfit);
@@ -4930,6 +5024,8 @@ function renderOrdersLog(){
     document.getElementById('statCost').textContent=costValues.some(v=>v===null) ? '—' : money(knownCost);
     document.getElementById('statProfit').textContent=profitValues.some(v=>v===null) ? '—' : money(knownProfit);
     document.getElementById('statCount').textContent=periodOrders.length;
+    document.getElementById('statCashSales').textContent=money(cashSales);
+    document.getElementById('statOnlineSales').textContent=money(onlineSales);
     document.getElementById('profitPeriodLabel').textContent=profitPeriod==='today' ? 'Today' : `Mon ${new Date(start).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} → Today`;
     updateProfitToggle();
 
@@ -4945,8 +5041,9 @@ function renderOrdersLog(){
       const profit=orderStoredProfit(o);
       const promoLine=o.promo ? ` · ${o.promo.code} saved ${money(o.discount||o.promo.discount||0)}` : '';
       const finance=`Sales <strong>${money(o.total||0)}</strong> · Cost <strong>${cost===null?'—':money(cost)}</strong> · Profit <strong>${profit===null?'—':money(profit)}</strong>`;
+      const pm=o.paymentMethod==='cash' ? '<span class="order-payment-badge cash">💵 Cash</span>' : o.paymentMethod==='online' ? '<span class="order-payment-badge online">📱 Online</span>' : '<span class="order-payment-badge unknown">Payment not set</span>';
       return `<div class="order-row" data-order-id="${o.id}">
-        <div class="top"><span class="time">${time}</span><span class="order-actions"><span class="total">${money(o.total||0)}</span><button type="button" class="order-remove" title="Remove order" aria-label="Remove order">×</button></span></div>
+        <div class="top"><span class="time">${time}${pm}</span><span class="order-actions"><span class="total">${money(o.total||0)}</span><button type="button" class="order-edit-payment" title="Edit payment method" aria-label="Edit payment method">✎</button><button type="button" class="order-remove" title="Remove order" aria-label="Remove order">×</button></span></div>
         <div class="items">${escapeHtml(summary)}${promoLine ? `<br><strong>${escapeHtml(promoLine)}</strong>` : ''}</div>
         <div class="numbers">${finance}</div>
       </div>`;
@@ -5441,7 +5538,7 @@ function bindEvents(){
 
   document.getElementById('cartFab').addEventListener('click', openDrawer);
   document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
-  document.getElementById('overlayBg').addEventListener('click', ()=>{ closeDrawer(); document.getElementById('checkoutModal').classList.remove('show'); });
+  document.getElementById('overlayBg').addEventListener('click', ()=>{ closeDrawer(); document.getElementById('checkoutModal').classList.remove('show'); document.getElementById('cashModal').classList.remove('show'); document.getElementById('paymentMethodModal').classList.remove('show'); });
 
   document.getElementById('cartList').addEventListener('click', e=>{
     const row = e.target.closest('.cart-row'); if(!row) return;
@@ -5458,7 +5555,6 @@ function bindEvents(){
 
   document.getElementById('checkoutBtn').addEventListener('click', openCheckout);
   document.getElementById('paidBtn').addEventListener('click', confirmPaid);
-  document.getElementById('cancelCheckoutBtn').addEventListener('click', ()=>document.getElementById('checkoutModal').classList.remove('show'));
 
   document.getElementById('gearBtn').addEventListener('click', ()=>{
     openPinModal(openSellerView);
@@ -5501,14 +5597,25 @@ function bindEvents(){
   document.getElementById('promoForm').addEventListener('submit', handlePromoSubmit);
   document.getElementById('createTestPromoBtn').addEventListener('click', createTestPromo);
 
+  document.getElementById('cashPaymentBtn').addEventListener('click', ()=>selectPaymentMethod('cash'));
+  document.getElementById('onlinePaymentBtn').addEventListener('click', ()=>selectPaymentMethod('online'));
+  document.getElementById('cancelPaymentMethodBtn').addEventListener('click', closePaymentMethodModal);
+  document.getElementById('cashPaidBtn').addEventListener('click', confirmPaid);
+  document.getElementById('cancelCashBtn').addEventListener('click', ()=>{ currentPaymentMethod=null; document.getElementById('cashModal').classList.remove('show'); });
+  document.getElementById('paidBtn').addEventListener('click', confirmPaid);
+  document.getElementById('cancelCheckoutBtn').addEventListener('click', ()=>{ currentPaymentMethod=null; document.getElementById('checkoutModal').classList.remove('show'); });
+  document.getElementById('cancelOrderEditBtn').addEventListener('click', ()=>{ editingOrderId=null; document.getElementById('orderEditModal').classList.remove('show'); });
+  document.getElementById('saveOrderPaymentBtn').addEventListener('click', saveOrderPayment);
+
   document.getElementById('profitTodayBtn').addEventListener('click', ()=>{ profitPeriod='today'; renderOrdersLog(); });
   document.getElementById('profitWeekBtn').addEventListener('click', ()=>{ profitPeriod='week'; renderOrdersLog(); });
   window.addEventListener('resize', ()=>{ if(sellerTab==='orders') renderOrdersLog(); });
   document.getElementById('ordersList').addEventListener('click', e=>{
+    const row=e.target.closest('.order-row'); if(!row) return;
+    const editBtn=e.target.closest('.order-edit-payment');
+    if(editBtn){ editOrderPayment(row.dataset.orderId); return; }
     const btn=e.target.closest('.order-remove');
-    if(!btn) return;
-    const row=btn.closest('.order-row');
-    if(row) removeOrder(row.dataset.orderId);
+    if(btn) removeOrder(row.dataset.orderId);
   });
   document.getElementById('promoType').addEventListener('change', updatePromoFormVisibility);
   document.getElementById('promoScope').addEventListener('change', updatePromoFormVisibility);
