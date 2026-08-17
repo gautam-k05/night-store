@@ -1108,7 +1108,7 @@ input,textarea,select{font-family:inherit;}
 
         <div class="form-card marketing-card">
           <h4>Marketing poster</h4>
-          <p class="marketing-note">Build a fresh catalog from every item that is currently in stock, using the live selling price and the photos already saved in the store.</p>
+          <p class="marketing-note">Build a compact <strong>1:1 WhatsApp-ready catalog</strong> from every item currently in stock. Products are automatically arranged in 3–4 columns so the full range is visible at a glance.</p>
           <div class="marketing-actions">
             <button type="button" class="primary-btn" id="generatePngBtn">Download PNG</button>
             <button type="button" class="ghost-btn" id="sharePngBtn">Share PNG</button>
@@ -3968,7 +3968,10 @@ function toast(msg){
 /* ================= CUSTOMER: CATEGORY CHIPS ================= */
 function renderCategoryChips(){
   const row = document.getElementById('chipRow');
-  const cats = ["All", ...CATEGORIES];
+  // Only expose categories that currently have at least one item in stock.
+  const availableCats = CATEGORIES.filter(category => items.some(it => it.category===category && (it.qty||0)>0));
+  if (currentCategory !== "All" && !availableCats.includes(currentCategory)) currentCategory = "All";
+  const cats = ["All", ...availableCats];
   row.innerHTML = cats.map(c=>{
     const label = c==="All" ? "🛒 All" : `${CAT_ICON[c]||''} ${c}`;
     return `<button class="chip ${c===currentCategory?'active':''}" data-cat="${c}">${label}</button>`;
@@ -3978,7 +3981,9 @@ function renderCategoryChips(){
 /* ================= CUSTOMER: GRID ================= */
 function renderGrid(){
   const wrap = document.getElementById('grid');
-  const list = items.filter(it => currentCategory==="All" || it.category===currentCategory);
+  // Out-of-stock products stay available to the seller in Inventory/Items,
+  // but are completely hidden from the customer-facing UI.
+  const list = items.filter(it => (it.qty||0)>0 && (currentCategory==="All" || it.category===currentCategory));
   if (list.length===0){
     wrap.innerHTML = "";
     document.getElementById('emptyState').style.display='flex';
@@ -5180,150 +5185,167 @@ async function buildMarketingPoster(){
     return null;
   }
 
+  // WhatsApp does not require a single fixed aspect ratio for normal chat photos.
+  // A square 1:1 canvas is a better fit for a compact catalogue preview than the
+  // previous long portrait poster, while still preserving the full image in chat.
   const W = 1080;
-  const M = 64;
-  const COL_GAP = 28;
-  const COL_W = (W - M*2 - COL_GAP) / 2;
-  const ITEM_H = 158;
-  const CAT_HEAD_H = 66;
-  const HEADER_H = 180;
-  const FOOTER_H = 190;
+  const totalItems = groups.reduce((n,g)=>n+g.items.length,0);
+  const cols = totalItems <= 24 ? 3 : 4;
+  const M = cols === 3 ? 42 : 34;
+  const GAP = cols === 3 ? 12 : 9;
+  const COL_W = (W - M*2 - GAP*(cols-1)) / cols;
+  const HEADER_H = 104;
+  const FOOTER_H = 82;
+  const CAT_H = cols === 3 ? 30 : 26;
+  const ROW_H = cols === 3 ? 104 : 88;
+  const CARD_H = ROW_H - 8;
+  const IMG = cols === 3 ? 66 : 56;
+  const INNER = cols === 3 ? 10 : 8;
+  const NAME_FONT = cols === 3 ? 16 : 14;
+  const PRICE_FONT = cols === 3 ? 19 : 17;
+  const STOCK_FONT = cols === 3 ? 10 : 9;
 
-  let contentH = 0;
-  for (const group of groups){
-    contentH += CAT_HEAD_H + Math.ceil(group.items.length/2) * ITEM_H + 20;
-  }
-  const H = HEADER_H + contentH + FOOTER_H;
+  // Keep the poster square. If an unusually large catalogue is configured,
+  // compress the rows just enough to keep every item on the same 1:1 canvas.
+  const rowsNeeded = groups.reduce((n,g)=>n + Math.ceil(g.items.length/cols),0);
+  const categorySpace = groups.length * CAT_H;
+  const baseContent = rowsNeeded * ROW_H + categorySpace;
+  const availableContent = W - HEADER_H - FOOTER_H - M*0.5;
+  const rowScale = baseContent > availableContent ? Math.max(0.5, availableContent / baseContent) : 1;
+  const rowH = ROW_H * rowScale;
+  const cardH = Math.max(62, CARD_H * rowScale);
+  const imgSize = Math.max(42, IMG * rowScale);
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
-  canvas.height = H;
+  canvas.height = W; // 1:1 WhatsApp chat poster
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = '#FFFBF2';
-  ctx.fillRect(0,0,W,H);
+  ctx.fillRect(0,0,W,W);
 
   // Header
   ctx.fillStyle = '#16191C';
   ctx.fillRect(0,0,W,HEADER_H);
   ctx.fillStyle = '#FFC93C';
-  ctx.font = '800 54px Arial, sans-serif';
-  ctx.fillText(settings.shopName || 'Hostel Store', M, 74);
+  ctx.font = `800 ${cols===3 ? 42 : 38}px Arial, sans-serif`;
+  ctx.fillText(settings.shopName || 'Hostel Store', M, 45);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = '600 26px Arial, sans-serif';
-  ctx.fillText('IN STOCK NOW', M, 120);
+  ctx.font = `700 ${cols===3 ? 20 : 18}px Arial, sans-serif`;
+  ctx.fillText('IN STOCK NOW', M, 70);
   ctx.fillStyle = '#B9B3A4';
-  ctx.font = '500 22px Arial, sans-serif';
-  ctx.fillText(`Updated ${new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}`, M, 153);
+  ctx.font = `500 ${cols===3 ? 16 : 14}px Arial, sans-serif`;
+  ctx.fillText(`Updated ${new Date().toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})}`, M, 91);
 
-  let y = HEADER_H + 18;
+  let y = HEADER_H + 8;
 
   for (const group of groups){
-    // Category heading
     ctx.fillStyle = '#2A2E33';
-    ctx.font = '800 28px Arial, sans-serif';
-    ctx.fillText(`${CAT_ICON[group.category]||''} ${group.category.toUpperCase()}`, M, y+34);
+    ctx.font = `800 ${cols===3 ? 18 : 16}px Arial, sans-serif`;
+    ctx.fillText(`${CAT_ICON[group.category]||''} ${group.category.toUpperCase()}`, M, y+18);
     ctx.strokeStyle = '#E7DFC9';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(M, y+50);
-    ctx.lineTo(W-M, y+50);
+    ctx.moveTo(M, y+24);
+    ctx.lineTo(W-M, y+24);
     ctx.stroke();
-    y += CAT_HEAD_H;
+    y += CAT_H;
 
     const imgs = await Promise.all(group.items.map(it=>loadPosterImage(it.photo)));
-    for (let i=0;i<group.items.length;i+=2){
-      for (let col=0; col<2; col++){
+    for (let i=0;i<group.items.length;i+=cols){
+      for (let col=0; col<cols; col++){
         const it = group.items[i+col];
         if (!it) continue;
-        const x = M + col*(COL_W+COL_GAP);
-        const rowY = y + Math.floor(i/2)*ITEM_H;
-        const imgSize = 118;
+        const x = M + col*(COL_W+GAP);
+        const rowY = y + Math.floor(i/cols)*rowH;
 
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#E7DFC9';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.roundRect(x,rowY,COL_W,ITEM_H-12,18);
+        ctx.roundRect(x,rowY,COL_W,cardH,12);
         ctx.fill();
         ctx.stroke();
 
         const img = imgs[i+col];
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x+16,rowY+16,imgSize,imgSize,14);
+        ctx.roundRect(x+INNER,rowY+(cardH-imgSize)/2,imgSize,imgSize,9);
         ctx.clip();
         ctx.fillStyle = '#FBF3DE';
-        ctx.fillRect(x+16,rowY+16,imgSize,imgSize);
+        ctx.fillRect(x+INNER,rowY+(cardH-imgSize)/2,imgSize,imgSize);
         if (img){
           const scale = Math.max(imgSize/img.width,imgSize/img.height);
           const dw = img.width*scale, dh = img.height*scale;
-          ctx.drawImage(img,x+16+(imgSize-dw)/2,rowY+16+(imgSize-dh)/2,dw,dh);
+          ctx.drawImage(img,x+INNER+(imgSize-dw)/2,rowY+(cardH-imgSize)/2+(imgSize-dh)/2,dw,dh);
         } else {
-          ctx.font = '44px Arial, sans-serif';
+          ctx.font = `${Math.round(imgSize*0.48)}px Arial, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillStyle = '#8A8370';
-          ctx.fillText(CAT_ICON[it.category]||'🍬',x+16+imgSize/2,rowY+16+imgSize/2);
+          ctx.fillText(CAT_ICON[it.category]||'🍬',x+INNER+imgSize/2,rowY+cardH/2);
           ctx.textAlign = 'start';
           ctx.textBaseline = 'alphabetic';
         }
         ctx.restore();
 
-        const tx = x+150;
-        const maxTextW = COL_W-170;
-        const nameLines = escapeCanvasText(ctx,it.name,maxTextW,'700 25px Arial, sans-serif').slice(0,2);
+        const tx = x + INNER + imgSize + (cols===3 ? 9 : 7);
+        const maxTextW = COL_W - (tx-x) - INNER;
         ctx.fillStyle = '#16191C';
-        ctx.font = '700 25px Arial, sans-serif';
-        nameLines.forEach((line,n)=>ctx.fillText(line,tx,rowY+46+n*31));
+        ctx.font = `700 ${NAME_FONT}px Arial, sans-serif`;
+        const nameLines = escapeCanvasText(ctx,it.name,maxTextW,`700 ${NAME_FONT}px Arial, sans-serif`).slice(0,2);
+        const nameY = rowY + (cols===3 ? 24 : 20);
+        nameLines.forEach((line,n)=>ctx.fillText(line,tx,nameY+n*(NAME_FONT+3)));
 
         ctx.fillStyle = '#E8491D';
-        ctx.font = '800 29px Arial, sans-serif';
-        ctx.fillText(money(livePrice(itemMrp(it))),tx,rowY+116);
+        ctx.font = `800 ${PRICE_FONT}px Arial, sans-serif`;
+        ctx.fillText(money(livePrice(itemMrp(it))),tx,rowY+cardH-(cols===3 ? 25 : 21));
 
-        // Small live stock indicator for the marketing poster.
-        const stockText = it.qty === 1 ? '1 left' : `${it.qty} left`;
-        ctx.font = '700 17px Arial, sans-serif';
-        const stockW = ctx.measureText(stockText).width + 18;
-        ctx.fillStyle = it.qty <= 3 ? '#FFF0E8' : '#EEF7F0';
+        const stockQty = Number(it.qty) || 0;
+        const stockText = stockQty === 1 ? '1 left' : `${stockQty} left`;
+        const isLowStock = stockQty === 1;
+        ctx.font = `700 ${STOCK_FONT}px Arial, sans-serif`;
+        const stockW = ctx.measureText(stockText).width + 12;
+        const stockY = rowY+cardH-(cols===3 ? 18 : 15);
+        // Marketing PNG stock indicator: 1 left = red, 2+ left = green.
+        ctx.fillStyle = isLowStock ? '#FFF0E8' : '#EEF7F0';
         ctx.beginPath();
-        ctx.roundRect(tx,rowY+122,stockW,20,7);
+        ctx.roundRect(tx,stockY+1,stockW,13,5);
         ctx.fill();
-        ctx.fillStyle = it.qty <= 3 ? '#C13A15' : '#25803F';
-        ctx.fillText(stockText,tx+9,rowY+137);
+        ctx.fillStyle = isLowStock ? '#C13A15' : '#25803F';
+        ctx.fillText(stockText,tx+6,stockY+11);
       }
     }
-    y += Math.ceil(group.items.length/2) * ITEM_H + 20;
+    y += Math.ceil(group.items.length/cols) * rowH + 4;
   }
 
-  // Footer
+  // Footer stays compact so the poster remains exactly square.
   ctx.fillStyle = '#16191C';
-  ctx.fillRect(0,y,W,FOOTER_H);
-  let fy = y + 48;
+  ctx.fillRect(0,W-FOOTER_H,W,FOOTER_H);
+  let fy = W-FOOTER_H+29;
   const tierCopy = getMarketingTierCopy();
   if (tierCopy){
     ctx.fillStyle = '#FFC93C';
-    ctx.font = '800 28px Arial, sans-serif';
-    const tierLines = escapeCanvasText(ctx,tierCopy,W-M*2,'800 28px Arial, sans-serif');
-    tierLines.slice(0,2).forEach((line,n)=>ctx.fillText(line,M,fy+n*36));
-    fy += Math.min(2,tierLines.length)*36 + 12;
+    ctx.font = `800 ${cols===3 ? 17 : 15}px Arial, sans-serif`;
+    const tierLines = escapeCanvasText(ctx,tierCopy,W-M*2,`800 ${cols===3 ? 17 : 15}px Arial, sans-serif`);
+    ctx.fillText(tierLines[0]||'',M,fy);
+    fy += 22;
   }
 
   const footer = (settings.marketingFooter||"").trim();
   if (footer){
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '700 28px Arial, sans-serif';
-    const footerLines = escapeCanvasText(ctx,footer,W-M*2,'700 28px Arial, sans-serif');
-    footerLines.slice(0,2).forEach((line,n)=>ctx.fillText(line,M,fy+n*36));
+    ctx.font = `700 ${cols===3 ? 18 : 16}px Arial, sans-serif`;
+    const footerLines = escapeCanvasText(ctx,footer,W-M*2,`700 ${cols===3 ? 18 : 16}px Arial, sans-serif`);
+    ctx.fillText(footerLines[0]||'',M,Math.min(W-15,fy));
   } else if (!tierCopy){
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '700 28px Arial, sans-serif';
+    ctx.font = `700 ${cols===3 ? 18 : 16}px Arial, sans-serif`;
     ctx.fillText('DM to order',M,fy);
   }
 
   return canvas;
 }
-
 async function generateMarketingPNG(){
   const canvas = await buildMarketingPoster();
   if (!canvas) return null;
