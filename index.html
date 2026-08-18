@@ -1391,6 +1391,7 @@ input,textarea,select{font-family:inherit;}
           <div class="profit-toggle">
             <button type="button" id="profitTodayBtn" class="active">Today</button>
             <button type="button" id="profitWeekBtn">This week</button>
+            <button type="button" id="profitAllBtn">All time</button>
           </div>
           <div class="profit-period" id="profitPeriodLabel">Today</div>
         </div>
@@ -4965,6 +4966,7 @@ function orderStoredProfit(o){
 function updateProfitToggle(){
   document.getElementById('profitTodayBtn').classList.toggle('active',profitPeriod==='today');
   document.getElementById('profitWeekBtn').classList.toggle('active',profitPeriod==='week');
+  document.getElementById('profitAllBtn').classList.toggle('active',profitPeriod==='all');
 }
 async function removeOrder(id){
   const orderId = Number(id);
@@ -4999,8 +5001,13 @@ async function saveOrderPayment(){
 }
 function renderDailyCharts(orders){
   const days=[]; const today=new Date(); today.setHours(0,0,0,0);
-  const count=profitPeriod==='today' ? 14 : 30;
-  for(let i=count-1;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); days.push(formatDayKey(d.getTime())); }
+  if(profitPeriod==='all' && orders.length){
+    const first=new Date(Math.min(...orders.map(o=>o.timestamp))); first.setHours(0,0,0,0);
+    for(let d=new Date(first); d<=today; d.setDate(d.getDate()+1)){ days.push(formatDayKey(d.getTime())); }
+  } else {
+    const count=profitPeriod==='today' ? 14 : 30;
+    for(let i=count-1;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); days.push(formatDayKey(d.getTime())); }
+  }
   const map={}; days.forEach(day=>map[day]={day,sales:0,profit:0});
   orders.forEach(o=>{
     const day=formatDayKey(o.timestamp); if(!map[day]) return;
@@ -5016,7 +5023,7 @@ function renderOrdersLog(){
     orders.sort((a,b)=>b.timestamp-a.timestamp);
     const now=Date.now();
     const today = new Date(); today.setHours(0,0,0,0);
-    const start = profitPeriod==='today' ? today.getTime() : getWeekStartTimestamp();
+    const start = profitPeriod==='today' ? today.getTime() : profitPeriod==='week' ? getWeekStartTimestamp() : 0;
     const periodOrders = orders.filter(o=>o.timestamp>=start && o.timestamp<=now);
     const sales = periodOrders.reduce((s,o)=>s+Number(o.total||0),0);
     const cashSales = periodOrders.filter(o=>o.paymentMethod==='cash').reduce((s,o)=>s+Number(o.total||0),0);
@@ -5031,7 +5038,7 @@ function renderOrdersLog(){
     document.getElementById('statCount').textContent=periodOrders.length;
     document.getElementById('statCashSales').textContent=money(cashSales);
     document.getElementById('statOnlineSales').textContent=money(onlineSales);
-    document.getElementById('profitPeriodLabel').textContent=profitPeriod==='today' ? 'Today' : `Mon ${new Date(start).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} → Today`;
+    document.getElementById('profitPeriodLabel').textContent=profitPeriod==='today' ? 'Today' : profitPeriod==='week' ? `Mon ${new Date(start).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} → Today` : `All time · ${periodOrders.length} orders`;
     updateProfitToggle();
 
     renderDailyCharts(orders);
@@ -5631,6 +5638,7 @@ function bindEvents(){
 
   document.getElementById('profitTodayBtn').addEventListener('click', ()=>{ profitPeriod='today'; renderOrdersLog(); });
   document.getElementById('profitWeekBtn').addEventListener('click', ()=>{ profitPeriod='week'; renderOrdersLog(); });
+  document.getElementById('profitAllBtn').addEventListener('click', ()=>{ profitPeriod='all'; renderOrdersLog(); });
   window.addEventListener('resize', ()=>{ if(sellerTab==='orders') renderOrdersLog(); });
   document.getElementById('ordersList').addEventListener('click', e=>{
     const row=e.target.closest('.order-row'); if(!row) return;
